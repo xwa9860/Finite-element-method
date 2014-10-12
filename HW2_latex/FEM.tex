@@ -173,7 +173,19 @@ where $\chi_i$ are the coordinates of the nodes in the global element.
 
 
 
+\section{Postprocessing}
+In order to plot the result, we calculate the value of the numerical solution for 10 points in each elements. For any given $\xi$, the corresponding value for the solution is straightforward:
 
+\begin{eqnarray}
+ u(x) &=& u(x(\xi))=\sum_{i=1}^{P+1} a_i^e \hat{\phi_i}\nonumber\\
+ x(\xi) &=& \sum x^e \hat{\phi}(\xi)
+ \end{eqnarray} 
+
+For each element, we can calculate the derivative of u(x):
+
+\begin{eqnarray}
+\frac{du}{dx} = \frac{d}{dx} \sum_{i=1}^{P+1} a_i \phi_i = (\frac{d}{d\xi}\sum_{i=1}^{P+1} a_i \hat{\phi_i})\frac{d\xi}{dx}
+\end{eqnarray}
 
 \section{Results}
 

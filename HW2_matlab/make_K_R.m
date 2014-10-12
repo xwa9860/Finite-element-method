@@ -98,21 +98,38 @@ end%all element
 if l_BC_type==1
     R(1) = value_Left;
     VV(1)=1;
-    VV(2)=0 ;  %K[1,:] 
-    if P==2
+    if P==1        
+        VV(2)=0 ;  %K[1,:] 
+    elseif P==2
+        VV(2)=0 ;  %K[1,:]
         VV(3)=0;
-    end
+    elseif P==3
+        VV(2)=0;
+        VV(3)=0;
+        VV(4)=0;
+    else
+        error('does not support higher order than P=3');
+    end%if
 elseif l_BC_type ==2
      R(1) = R(1)+ value_Left;    
 end
     
 % At x = xMax
 if r_BC_type ==1
-    R(N) = value_Right; 
-    VV(nval-2)= 0;%K[N,:]   
-    if P==2
+    R(N) = value_Right;
+    if P==1      
+        VV(nval-2)= 0;%K[N,:]   
+    elseif P==2
+        VV(nval-2)= 0;
         VV(nval-3)=0;
+    elseif P==3
+        VV(nval-2)= 0;
+        VV(nval-3)=0;
+        VV(nval-4)=0;
+    else
+        error('does not support P higher than 3')
     end
+    
     VV(nval-1) = 1; %K[N,N]
 elseif r_BC_type ==2
     R(N) = R(N) + value_Right;    
@@ -129,5 +146,9 @@ end
 % 3.0], the assembly will add repeated values, so you'll end up
 % with a 5.0 at 1,1 in the above example.
 K = sparse( II, JJ, VV, N,N);
-A = K\R;     
+A = K\R;  
+
+
+
+
 end
