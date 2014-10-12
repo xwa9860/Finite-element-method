@@ -66,7 +66,7 @@ dux =@(x) 5*(512*(67*cos(61*pi*x/4) -...
     61*cos(67*pi/4))/4087/pi));
 
 Ne =   10;  
-P = 3;
+P = 1;
 N = P*Ne +1;
 
 coord = linspace(xMin, xMax, N);
@@ -115,6 +115,34 @@ display(error);
 % Output the results and plot the solution
 % ************************************************************************
 
+% Defaults for this blog post
+width = 5;     % Width in inches
+height = 5;    % Height in inches
+alw = 0.75;    % AxesLineWidth
+fsz = 30;      % Fontsize
+lw = 5;      % LineWidth
+msz = 9;       % MarkerSize
+
+% The properties we've been using in the figures
+set(0,'defaultLineLineWidth',lw);   % set the default line width to lw
+set(0,'defaultLineMarkerSize',msz); % set the default line marker size to msz
+set(0,'defaultLineLineWidth',lw);   % set the default line width to lw
+set(0,'defaultLineMarkerSize',msz); % set the default line marker size to msz
+
+% Set the default Size for display
+defpos = get(0,'defaultFigurePosition');
+set(0,'defaultFigurePosition', [defpos(1) defpos(2) width*100, height*100]);
+
+% Set the defaults for saving/printing to a file
+set(0,'defaultFigureInvertHardcopy','on'); % This is the default anyway
+set(0,'defaultFigurePaperUnits','inches'); % This is the default anyway
+defsize = get(gcf, 'PaperSize');
+left = (defsize(1)- width)/2;
+bottom = (defsize(2)- height)/2;
+defsize = [left, bottom, width, height];
+set(0, 'defaultFigurePaperPosition', defsize);
+
+
 % Plot the numerical solution, N_ksi =10 points per element
 N_ksi =10;
 index =1;
@@ -137,21 +165,19 @@ end%for e = 1:NE_Opt
 
 plot(x_ksi_array, u_ksi_numerical_array, 'o');
 hold all;
-
 realU = ux(coord);
-% for e=1:Ne_Opt+1
-% [realU(e), du] = analyticalSolution(coord(e));
-% end
+plot (coord, realU);
 
-plot (coord, realU, '--');
-%plot(coord, matA, 'o');
-grid on;
-xlabel('x');
-ylabel('u(x), u_N(x)');
-title('Solution for differential equation');
-legend('numerical', 'analytical');
-hold(gca, 'off');
-% 
+
+set(gca,'FontSize',fsz);
+xlabel('x','FontSize', fsz);
+ylabel('u(x), u_N(x)','FontSize', fsz);
+title('Solution for differential equation', 'FontSize', fsz);
+leg= legend('numerical', 'analytical', 'Location','southeast');
+set(leg,'FontSize',fsz);
+
+set(gca,'XTick',-1:1); %<- Still need to manually specific tick marks
+set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
 % errorN = zeros(Ne_Opt+1, 1);
 % 
 % for e=1:Ne_Opt+1

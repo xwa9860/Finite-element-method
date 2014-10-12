@@ -73,6 +73,13 @@ u(0)& =& =0 \nonumber\\
 A1(L)\frac{du}{dx}(L) &=& 1 \nonumber\\
 \end{eqnarray}
 
+\begin{figure}
+\centering
+\includegraphics[scale=.7]{cubic_shape_function.eps}
+\caption{cubic shape function}
+\label{fig:cubic}
+\end{figure}
+
 \section{Analytical solution}
 The analytical solution of this equation is easily found after two integrations:
 
@@ -80,6 +87,7 @@ The analytical solution of this equation is easily found after two integrations:
 u(x)&=& 5\frac{4087\pi x + 1536\sqrt{2}x + \frac{137216sin(\frac{61\pi x}{4})}{61\pi}- \frac{124928sin(\frac{67\pi x}{4}))}{67\pi}}{4087\pi}\nonumber\\
 \frac{du}{dx}&=& 5(1+ \frac{512(67cos(\frac{61\pi x}{4})- 61cos(\frac{67\pi x}{4}))}{4087\pi} - \frac{512(67cos(\frac{61\pi }{4})- 61cos(\frac{67\pi}{4}))}{4087\pi})
 \end{eqnarray}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Error}
@@ -196,43 +204,38 @@ Minimum number of element to achieve to error criteria for different order of el
     \hline
     P & $Ne_{opt}$\\ \hline
     1 & 1347\\ \hline
-    2 &  \\ \hline
-    3 & \\ \hline
+    2 &  93\\ \hline
+    3 & 18\\ \hline
     \hline
   \end{tabular}
 \end{center}
 The numerical solution and the analytical solution are compared in figure \ref{fig:solution}. And the error between the analytical solution and the numerical solution at each elements are shown in figure \ref{fig:error}. The error is not uniform throughout the domain of validation. 
 
-% \begin{figure}
-%         \centering
-%         \begin{subfigure}[b]{0.45\textwidth}
-%                 \includegraphics[width=\textwidth]{solutionk2.jpg}
-%                 \caption{solution(k=2)}
-%                 \label{fig:k2}
-%         \end{subfigure}%
-%         ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[b]{0.45\textwidth}
-%                 \includegraphics[width=\textwidth]{solutionk4.jpg}
-%                 \caption{solution(k=4)}
-%                 \label{fig:k4}
-%         \end{subfigure}
-%         %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[b]{0.45\textwidth}
-%                 \includegraphics[width=\textwidth]{solutionk8.jpg}
-%                 \caption{solution(k=8)}
-%                 \label{fig:k8}
-%         \end{subfigure}
-%         ~ 
-%          \begin{subfigure}[b]{0.45\textwidth}
-%                 \includegraphics[width=\textwidth]{solutionk16.jpg}
-%                 \caption{solution(k=16)}
-%                 \label{fig:k8}
-%         \end{subfigure}
 
-%         \caption{solution u(x) and $u_N(x)$}\label{fig:solution}
-% \end{figure}
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.6\textwidth}
+                \includegraphics[width=\textwidth]{solution_P1.eps}
+                \caption{linear element solution}
+                \label{fig:k2}
+        \end{subfigure}%
+        %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.6\textwidth}
+                \includegraphics[width=\textwidth]{solution_P2.eps}
+                \caption{quadratic element solution}
+                \label{fig:k4}
+        \end{subfigure}
+        %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.6\textwidth}
+                \includegraphics[width=\textwidth]{solution_P3.eps}
+                \caption{cubic element solution}
+                \label{fig:k8}
+        \end{subfigure}
+
+        \caption{solution u(x) and $u_N(x)$}\label{fig:solution}
+\end{figure}
 
 % \begin{figure}
 %         \centering
