@@ -66,7 +66,7 @@ dux =@(x) 5*(512*(67*cos(61*pi*x/4) -...
     61*cos(67*pi/4))/4087/pi));
 
 Ne =   10;  
-P = 1;
+P = 3;
 N = P*Ne +1;
 
 coord = linspace(xMin, xMax, N);
@@ -148,7 +148,9 @@ N_ksi =10;
 index =1;
 x_ksi_array = zeros(N_ksi*Ne_Opt,1);
 u_ksi_numerical_array = zeros(N_ksi*Ne_Opt,1);
-
+u_real_array = zeros(N_ksi*Ne_Opt,1);
+error_array = zeros(N_ksi*Ne_Opt,1);
+error_r_array = zeros(N_ksi*Ne_Opt,1);
 for e=1:Ne_Opt
     Nl= P*(e-1)+1;
     Nr= P*e+1;
@@ -159,15 +161,17 @@ for e=1:Ne_Opt
         [du, u, x_ksi] = postprocessing (ksi_array(k), matA_elem, coordElement, P);
         x_ksi_array(index) = x_ksi;
         u_ksi_numerical_array(index) = u;
+        u_real_array(index) = ux(x_ksi);
+        error_array(index) = abs(ux(x_ksi) -u);
+        error_r_array(index) = abs((ux(x_ksi) -u)/u);
         index = index +1;
     end
 end%for e = 1:NE_Opt
 
-plot(x_ksi_array, u_ksi_numerical_array, 'o');
-hold all;
-realU = ux(coord);
-plot (coord, realU);
+sol_fig = plot(x_ksi_array, u_ksi_numerical_array, 'o', x_ksi_array, u_real_array, 'r');
 
+%realU = ux(coord);
+%plot (coord, realU);
 
 set(gca,'FontSize',fsz);
 xlabel('x','FontSize', fsz);
@@ -178,12 +182,24 @@ set(leg,'FontSize',fsz);
 
 set(gca,'XTick',-1:1); %<- Still need to manually specific tick marks
 set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
-% errorN = zeros(Ne_Opt+1, 1);
-% 
-% for e=1:Ne_Opt+1
-% errorN(e) = analyticalSolution(coord(e), k)-matA(e);
-% end
-% 
-% plot (coord, errorN, 'r--');
 
 
+figure;
+error_fig = plot (x_ksi_array, error_array);
+
+set(gca,'FontSize',fsz);
+xlabel('x','FontSize', fsz);
+ylabel('error','FontSize', fsz);
+title('Error of numerical solution for differential equation', 'FontSize', fsz);
+%leg= legend('numerical', 'analytical', 'Location','southeast');
+%set(leg,'FontSize',fsz);
+
+figure;
+rel_error_fig = plot (x_ksi_array, error_r_array);
+
+set(gca,'FontSize',fsz);
+xlabel('x','FontSize', fsz);
+ylabel('error','FontSize', fsz);
+title('Relative error of numerical solution for differential equation', 'FontSize', fsz);
+%leg= legend('numerical', 'analytical', 'Location','southeast');
+%set(leg,'FontSize',fsz);

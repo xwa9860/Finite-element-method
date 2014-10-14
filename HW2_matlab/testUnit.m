@@ -69,7 +69,7 @@ coordElement = nodecoord(index_l:2*e-1+P);
 
 %plot shape functions
 N_ksi =100;
-P=3;
+P=2;
 index =1;
 Phi_ksi_array = zeros(N_ksi,(P+1));
 ksi_array = linspace(-1, 1, N_ksi);
@@ -88,7 +88,7 @@ coord_elem = linspace(1,2, P+1);
 width = 3;     % Width in inches
 height = 3;    % Height in inches
 alw = 0.75;    % AxesLineWidth
-fsz = 11;      % Fontsize
+fsz = 30;      % Fontsize
 lw = 1.5;      % LineWidth
 msz = 8;       % MarkerSize
 
