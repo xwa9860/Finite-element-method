@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1413262888 "FEM.tex" "FEM.pdf" "FEM" 1413262889
+["pdflatex"] 1413386997 "FEM.tex" "FEM.pdf" "FEM" 1413386998
   "/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2014/texmf-dist/tex/generic/babel-english/english.ldf" 1367878877 6963 2e0cb3d93aa64508bdb0db58ae900d97 ""
   "/usr/local/texlive/2014/texmf-dist/tex/generic/babel/babel.def" 1395780385 49536 e1475dd245ff2196764ba5b91ac63714 ""
@@ -51,16 +51,16 @@
   "/usr/local/texlive/2014/texmf-dist/tex/latex/parskip/parskip.sty" 1285887441 2763 02a40cc5a32805c41d919cfbdba7e99a ""
   "/usr/local/texlive/2014/texmf-dist/tex/latex/pdftex-def/pdftex.def" 1306616590 55368 3c8a0d99822330f2dfabc0dfb09ce897 ""
   "/usr/local/texlive/2014/texmf-dist/tex/latex/sectsty/sectsty.sty" 1137110779 22423 d476012cd03f82f9475ad54ba6cd3267 ""
-  "FEM.aux" 1413262889 1756 421578e5b1d4080485fbfe898aad11d2 ""
-  "FEM.tex" 1413262223 12611 4fa127e34a03410ea5fae38684d2614c ""
+  "FEM.aux" 1413386998 1778 427da9432747c0daf32ef81bd5f83fd3 ""
+  "FEM.tex" 1413386957 12230 007f5c57f72f597055b19b50f83cb01f ""
   "cubic_shape_function-eps-converted-to.pdf" 1413154284 9163 42b6b333f4f566d6fb81e035a2068da9 ""
   "cubic_shape_function.eps" 1413151881 11877 b4df0eb2f3a077d1c1b2242e562705ad ""
   "error_P1-eps-converted-to.pdf" 1413261313 59664 5c9b9204cb3b9e7f87444f0fe4698afb ""
   "error_P1.eps" 1413261059 83821 dd436f1a623ce5f1316c193b382c2fbc ""
   "error_P2-eps-converted-to.pdf" 1413262089 11014 2e2c5545e1a3f26ea894e10de48ba785 ""
   "error_P2.eps" 1413261926 17131 42efdfca913c6baf5b178140f81abaef ""
-  "error_P3-eps-converted-to.pdf" 1413262090 7456 4caad882ce3ba755ab2125d8a5920bfa ""
-  "error_P3.eps" 1413262033 12178 2110012cd9b860ef7536c36862804537 ""
+  "error_P3-eps-converted-to.pdf" 1413386997 7153 b2bef1e4aaf2cc2f456fecc75ec868a2 ""
+  "error_P3.eps" 1413386431 12009 f20f6840b63876d201ab8c8eaa69da17 ""
   "linear_shape_function-eps-converted-to.pdf" 1413252090 7998 23b8dee4fe35ac16fc0b9ceb1cc7655e ""
   "linear_shape_function.eps" 1413151832 10027 5d0612a80ed719e3709fd3e0ed72be3e ""
   "quadratic_shape_function-eps-converted-to.pdf" 1413252296 8611 7f549c5b0bf174830ae27d786d46c949 ""
@@ -69,8 +69,8 @@
   "solution_P1.eps" 1413262793 346931 00345b7ba4b53157a59289b10444d293 ""
   "solution_P2-eps-converted-to.pdf" 1413262803 57290 00b40a8b706ccddcb2d06e3df6a82c7b ""
   "solution_P2.eps" 1413262513 34069 0c74faae1798de76fba75b6f32a6a69a ""
-  "solution_P3-eps-converted-to.pdf" 1413262889 16848 824b6bc6b00a2a093fed1c947acac4e9 ""
-  "solution_P3.eps" 1413262884 14015 3856c0289f877cd3a5806fad5ece6947 ""
+  "solution_P3-eps-converted-to.pdf" 1413386995 25677 962a6635c67c08dc320c5ebc306a672e ""
+  "solution_P3.eps" 1413386450 18321 33a1a19c5d0d14f299510ba08e93c6c3 ""
   (generated)
   "FEM.pdf"
   "FEM.aux"

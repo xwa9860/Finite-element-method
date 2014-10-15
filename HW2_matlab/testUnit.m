@@ -15,6 +15,15 @@ else
     display(error);
 end
 
+coordE= [-1, -1/3.0, 1/3.0, 1];
+integ = GQ_integration(3, 3, func_f, coordE);
+error = abs(integ - 2/3.0);
+if error<0.001
+    display('integration function is good');
+else
+    display('integration function is bad, error is ' );
+    display(error);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test getOutput function
 x = getOutput(@testFunc, 1, 1,2);

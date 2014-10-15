@@ -1,13 +1,12 @@
 function integ_value = GQ_integration(P, Q, func, coord_element)
 %{
-calculate the integration value of  function 'func'on the interval '[x_min, x_max]',
+calculate the integration value of  function 'func'on the interval '[coord_element]',
 by projecting it to some master elements [-1,1] using Gaussian Quadrature method
 
 LIMIT:
 the function should be approximated by the sum of the integral on E elements
 
 Input:
-E: nb of elements
 P: order of elements
 Q: nb of GQ points
 func: the function to be integrated
@@ -15,7 +14,7 @@ x_min and x_max: two ends of the integral domains
 
 variables:
 J_1D: Jacobian _ a value 1/2*[x_max-x_min] in 1D
-N: nb of nodes = E+1
+
 %}
 [GQpoint, GQweight]=lgwt(Q, -1, 1);
      

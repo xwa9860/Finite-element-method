@@ -65,8 +65,8 @@ dux =@(x) 5*(512*(67*cos(61*pi*x/4) -...
     -(512*(67*cos(61*pi/4) -...
     61*cos(67*pi/4))/4087/pi));
 
-Ne =   10;  
-P = 3;
+Ne =   1;  
+P = 1;
 N = P*Ne +1;
 
 coord = linspace(xMin, xMax, N);
@@ -82,6 +82,13 @@ errorTol = 0.01;
 %calculate the error of approximation  
 
 error = calcError(P, Ne, A1Func, dux, matA,coord);
+% while error > errorTol  && Ne<100
+%     Ne =Ne+1;
+%     N = P*Ne +1;
+%     coord = linspace(xMin, xMax, N);
+%     matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+%     error = calcError(P, Ne, A1Func, dux, matA,coord);
+% end
 
 while error > errorTol  && Ne<10000
     Ne = 2* Ne;
@@ -109,6 +116,9 @@ while Ne_max-Ne_min > 2
     end
 end
 display(Ne_Opt);
+N_Opt = Ne_Opt*P +1;
+display(N_Opt);
+%display(Ne);
 display(error);
 
 % ************************************************************************
@@ -149,8 +159,8 @@ index =1;
 x_ksi_array = zeros(N_ksi*Ne_Opt,1);
 u_ksi_numerical_array = zeros(N_ksi*Ne_Opt,1);
 u_real_array = zeros(N_ksi*Ne_Opt,1);
-error_array = zeros(N_ksi*Ne_Opt,1);
-error_r_array = zeros(N_ksi*Ne_Opt,1);
+
+
 for e=1:Ne_Opt
     Nl= P*(e-1)+1;
     Nr= P*e+1;
@@ -176,30 +186,35 @@ sol_fig = plot(x_ksi_array, u_ksi_numerical_array, 'o', x_ksi_array, u_real_arra
 set(gca,'FontSize',fsz);
 xlabel('x','FontSize', fsz);
 ylabel('u(x), u_N(x)','FontSize', fsz);
-title('Solution for differential equation', 'FontSize', fsz);
+%title('Solution for differential equation', 'FontSize', fsz);
 leg= legend('numerical', 'analytical', 'Location','southeast');
 set(leg,'FontSize',fsz);
 
 set(gca,'XTick',-1:1); %<- Still need to manually specific tick marks
 set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%claculate error for different number of meshes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ne_array = linspace(1, Ne_Opt, Ne_Opt);
+error_array = zeros(Ne_Opt, 1);
+
+for k = 1 : Ne_Opt
+    N = P * Ne_array(k) +1;
+    coord = linspace(xMin, xMax, N);
+    matA = make_K_R(P, k, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+    error_array(k) = calcError(P, k, A1Func,dux, matA,coord);
+end
 
 figure;
-error_fig = plot (x_ksi_array, error_array);
+error_fig = plot (Ne_array, error_array);
 
 set(gca,'FontSize',fsz);
-xlabel('x','FontSize', fsz);
+xlabel('number of elements','FontSize', fsz);
 ylabel('error','FontSize', fsz);
-title('Error of numerical solution for differential equation', 'FontSize', fsz);
+%title('Evoluation of numerical error with number of elements', 'FontSize', fsz);
 %leg= legend('numerical', 'analytical', 'Location','southeast');
 %set(leg,'FontSize',fsz);
 
-figure;
-rel_error_fig = plot (x_ksi_array, error_r_array);
 
-set(gca,'FontSize',fsz);
-xlabel('x','FontSize', fsz);
-ylabel('error','FontSize', fsz);
-title('Relative error of numerical solution for differential equation', 'FontSize', fsz);
-%leg= legend('numerical', 'analytical', 'Location','southeast');
-%set(leg,'FontSize',fsz);

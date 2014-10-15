@@ -3,7 +3,7 @@ function error = calcError( P, Ne, A1Func, dux, AMat, coord)
 numeritor=0;
 denominator=0;
 
-Q=3;
+Q=5;
 if P==1
     coord_elem_ksi = [-1, 1];
 elseif P==2

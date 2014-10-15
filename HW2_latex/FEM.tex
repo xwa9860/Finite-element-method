@@ -189,8 +189,6 @@ and
 \end{figure}
 
 
-
-
 To mapping between master elements and the real spatial coordinates, we calculate x from $\xi$:
 
 \begin{equation}
@@ -222,10 +220,10 @@ Minimum number of elements and number of nodes to achieve to error criteria for 
 \begin{center}
   \begin{tabular}{ l | c | c}
     \hline
-    P & $Ne_{opt}$ & $N_{opt}$\\ \hline
-    1 & 1347 & 1348\\ \hline
-    2 &  93 & 187\\ \hline
-    3 & 18 & 65\\ \hline
+    P & $Ne_{opt}$ & $N_{opt} = Ne_{Opt} * P + 1 $\\ \hline
+    1 & 1348 & 1349\\ \hline
+    2 &  94 & 189\\ \hline
+    3 & 34 & 103\\ \hline
     \hline
   \end{tabular}
 \end{center}
@@ -257,7 +255,7 @@ The numerical solution and the analytical solution are compared in figure \ref{f
                 \label{fig:k8}
         \end{subfigure}
 
-        \caption{solution u(x) and $u_N(x)$}\label{fig:solution}
+        \caption{Comparison of analytical solution and numerical solution}\label{fig:solution}
 \end{figure}
 
 \begin{figure}
@@ -273,7 +271,7 @@ The numerical solution and the analytical solution are compared in figure \ref{f
         \begin{subfigure}[b]{0.8\textwidth}
                 \includegraphics[width=\textwidth]{error_P2.eps}
                 \caption{error(P=2)}
-                \label{fig:k4}
+                \label{fig:e2}
         \end{subfigure}
         %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
           %(or a blank line to force the subfigure onto a new line)
@@ -281,10 +279,10 @@ The numerical solution and the analytical solution are compared in figure \ref{f
         \begin{subfigure}[b]{0.8\textwidth}
                 \includegraphics[width=\textwidth]{error_P3.eps}
                 \caption{error(P=3)}
-                \label{fig:k8}
+                \label{fig:e3}
         \end{subfigure}
 
-        \caption{error between u(x) and $u_N(x)$}\label{fig:error}
+        \caption{Evoluation of numerical error with number of elements}\label{fig:error}
 \end{figure}
 
 
@@ -292,6 +290,6 @@ The numerical solution and the analytical solution are compared in figure \ref{f
 
 \section{Conclusion}
 
-
+This homework extends the previous one to higher order of element. As the error of ... . Having higher order element shape functions can capture the fluctuations 
 
 \end{document}
