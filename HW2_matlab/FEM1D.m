@@ -66,7 +66,9 @@ dux =@(x) 5*(512*(67*cos(61*pi*x/4) -...
     61*cos(67*pi/4))/4087/pi));
 
 Ne =   1;  
-P = 1;
+P =2;
+
+    
 N = P*Ne +1;
 
 coord = linspace(xMin, xMax, N);
@@ -76,50 +78,41 @@ matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
  % use backslash operator of MATLAB instead of inv()
 
 
-%find the optimal number of element to achieve the error criteria
+% %find the optimal number of element to achieve the error criteria
 errorTol = 0.010;
-
+error =1;
 %calculate the error of approximation  
 
-error = calcError(P, Ne, A1Func, dux, matA,coord);
-while error > errorTol  
-    Ne =Ne+1;
+while error > errorTol  && Ne<10000
+    Ne = 2* Ne;
     N = P*Ne +1;
     coord = linspace(xMin, xMax, N);
     matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
     error = calcError(P, Ne, A1Func, dux, matA,coord);
 end
-
-% while error > errorTol  && Ne<10000
-%     Ne = 2* Ne;
-%     N = P*Ne +1;
-%     coord = linspace(xMin, xMax, N);
-%     matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
-%     error = calcError(P, Ne, A1Func, dux, matA,coord);
-% end
-% display(Ne);
-% Ne_max = Ne;
-% Ne_min = Ne/2;
-% 
-% while Ne_max-Ne_min > 2
-%     Ne_Opt = ceil((Ne_max+Ne_min)/2);
-%     N = P*Ne_Opt +1;
-%     coord = linspace(xMin, xMax, N);
-%     matA = make_K_R(P, Ne_Opt, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
-%     error = calcError(P, Ne_Opt, A1Func,dux, matA,coord);
-%     if error > errorTol
-%         Ne_min = Ne_Opt;
-%         %display(Ne_min);
-%     else
-%         Ne_max = Ne_Opt;
-%         %display(Ne_max);
-%     end
-% end
-% display(Ne_Opt);
-% N_Opt = Ne_Opt*P +1;
-% display(N_Opt);
 display(Ne);
-% display(error);
+Ne_max = Ne;
+Ne_min = Ne/2;
+
+while Ne_max-Ne_min > 2
+    Ne_Opt = ceil((Ne_max+Ne_min)/2);
+    N = P*Ne_Opt +1;
+    coord = linspace(xMin, xMax, N);
+    matA = make_K_R(P, Ne_Opt, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+    error = calcError(P, Ne_Opt, A1Func,dux, matA,coord);
+    if error > errorTol
+        Ne_min = Ne_Opt;
+        %display(Ne_min);
+    else
+        Ne_max = Ne_Opt;
+        %display(Ne_max);
+    end
+end
+display(Ne_Opt);
+N_Opt = Ne_Opt*P +1;
+display(N_Opt);
+%display(Ne);
+display(error);
 
 % ************************************************************************
 % Output the results and plot the solution
@@ -152,7 +145,6 @@ bottom = (defsize(2)- height)/2;
 defsize = [left, bottom, width, height];
 set(0, 'defaultFigurePaperPosition', defsize);
 
-Ne_Opt =1600;
 % Plot the numerical solution, N_ksi =10 points per element
 N_ksi =10;
 index =1;
@@ -179,48 +171,94 @@ for e=1:Ne_Opt
 end%for e = 1:NE_Opt
 
 sol_fig = plot(x_ksi_array, u_ksi_numerical_array, 'o', x_ksi_array, u_real_array, 'r');
-
-%realU = ux(coord);
-%plot (coord, realU);
-
-set(gca,'FontSize',fsz);
-xlabel('x','FontSize', fsz);
-ylabel('u(x), u_N(x)','FontSize', fsz);
-%title('Solution for differential equation', 'FontSize', fsz);
-leg= legend('numerical', 'analytical', 'Location','southeast');
-set(leg,'FontSize',fsz);
-
-set(gca,'XTick',-1:1); %<- Still need to manually specific tick marks
-set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
+% 
+% %realU = ux(coord);
+% %plot (coord, realU);
+% 
+% set(gca,'FontSize',fsz);
+% xlabel('x','FontSize', fsz);
+% ylabel('u(x), u_N(x)','FontSize', fsz);
+% %title('Solution for differential equation', 'FontSize', fsz);
+% leg= legend('numerical', 'analytical', 'Location','southeast');
+% set(leg,'FontSize',fsz);
+% 
+% set(gca,'XTick',-1:1); %<- Still need to manually specific tick marks
+% set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %claculate error for different number of meshes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Ne_Opt =1600;
-Ne_array = linspace(1, Ne_Opt, Ne_Opt);
-DOF_array = zeros(Ne_Opt, 1);
-h_array = zeros(Ne_Opt, 1);
-error_array = zeros(Ne_Opt, 1);
-for k = 1 : Ne_Opt
-    N = P * Ne_array(k) +1;
-    coord = linspace(xMin, xMax, N);
-    matA = make_K_R(P, k, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
-    error_array(k) = calcError(P, k, A1Func,dux, matA,coord);
-    DOF_array(k) = N;
-    h_array(k) = L/Ne;
-end
-
-figure;
-error_fig = plot (DOF_array, error_array);
-set(gca,'FontSize',fsz);
-xlabel('number of degrees of freedom','FontSize', fsz);
-ylabel('error','FontSize', fsz);
-%title('Evoluation of numerical error with number of elements', 'FontSize', fsz);
-%leg= legend('numerical', 'analytical', 'Location','southeast');
-%set(leg,'FontSize',fsz);
-
-figure;
-error_fig = plot (h_array, error_array);
-set(gca,'FontSize',fsz);
-xlabel('element sizes','FontSize', fsz);
-ylabel('error','FontSize', fsz);
+% 
+% 
+% P=1;
+% Ne_Opt=1400;
+% Ne_array = linspace(1, Ne_Opt, Ne_Opt);
+% DOF_array = zeros(Ne_Opt, 1);
+% h_array = zeros(Ne_Opt, 1);
+% error_array = zeros(Ne_Opt, 1);
+% for k = 1 :30: Ne_Opt
+%     N = P * Ne_array(k) +1;
+%     coord = linspace(xMin, xMax, N);
+%     matA = make_K_R(P, k, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+%     error_array(k) = calcError(P, k, A1Func,dux, matA,coord);
+%     DOF_array(k) = N;
+%     h_array(k) = L/N;
+% end
+% 
+% figure;
+% error_fig = plot (h_array, error_array);
+% 
+% 
+% 
+% 
+% hold all on;
+% 
+% P=2;
+% Ne_Opt=100;
+% Ne_array = linspace(1, Ne_Opt, Ne_Opt);
+% DOF_array = zeros(Ne_Opt, 1);
+% h_array = zeros(Ne_Opt, 1);
+% error_array = zeros(Ne_Opt, 1);
+% for k = 1 :2: Ne_Opt
+%     N = P * Ne_array(k) +1;
+%     coord = linspace(xMin, xMax, N);
+%     matA = make_K_R(P, k, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+%     error_array(k) = calcError(P, k, A1Func,dux, matA,coord);
+%     DOF_array(k) = N;
+%     h_array(k) = L/N;
+% end
+% 
+% error_fig = plot (h_array, error_array);
+% 
+% P=3;
+% Ne_Opt=40;
+% Ne_array = linspace(1, Ne_Opt, Ne_Opt);
+% DOF_array = zeros(Ne_Opt, 1);
+% h_array = zeros(Ne_Opt, 1);
+% error_array = zeros(Ne_Opt, 1);
+% for k = 1 :1: Ne_Opt
+%     N = P * Ne_array(k) +1;
+%     coord = linspace(xMin, xMax, N);
+%     matA = make_K_R(P, k, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+%     error_array(k) = calcError(P, k, A1Func,dux, matA,coord);
+%     DOF_array(k) = N;
+%     h_array(k) = L/N;
+% end
+% 
+% %error_fig = plot (DOF_array, error_array);
+% error_fig = plot (h_array, error_array);
+% set(gca,'FontSize',fsz);
+% xlabel('element size','FontSize', fsz);
+% ylabel('error','FontSize', fsz);
+% %title('Evoluation of numerical error with number of elements', 'FontSize', fsz);
+% leg= legend('P=1', 'P=2', 'P=3');
+% %set(leg,'FontSize',fsz)
+% 
+% 
+% % figure;
+% % error_fig = plot (h_array, error_array);
+% % set(gca,'FontSize',fsz);
+% % xlabel('element sizes','FontSize', fsz);
+% % ylabel('error','FontSize', fsz);
+% % 
+% 

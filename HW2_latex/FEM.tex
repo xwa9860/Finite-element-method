@@ -72,11 +72,27 @@ A1(L)\frac{du}{dx}(L) &=& 1 \nonumber\\
 
 
 \section{Analytical solution}
+
 This equation can be solved analytically after two integrations:
 
 \begin{eqnarray}
-u(x)&=& 5\frac{4087\pi x + 1536\sqrt{2}x + \frac{137216sin(\frac{61\pi x}{4})}{61\pi}- \frac{124928sin(\frac{67\pi x}{4}))}{67\pi}}{4087\pi}\nonumber\\
-\frac{du}{dx}&=& 5(1+ \frac{512(67cos(\frac{61\pi x}{4})- 61cos(\frac{67\pi x}{4}))}{4087\pi} - \frac{512(67cos(\frac{61\pi }{4})- 61cos(\frac{67\pi}{4}))}{4087\pi})
+\label{du_ana}
+\frac{du}{dx}&=& 5\int 256sin(\frac{3\pi kx}{4})cos(16 \pi x)\nonumber\\
+&=& 5\int 128[sin(\frac{67 \pi x}{4}) - sin(\frac{61 \pi x}{4})]\nonumber\\
+&=& 5\frac{512(67cos(\frac{61\pi x}{4})- 61cos(\frac{67\pi x}{4}))}{4087\pi} +constant 
+\end{eqnarray}
+
+Apply the bondary condition on x=L, we obtain the constant. The equation \ref{du_ana} becomes:
+
+\begin{eqnarray}
+\frac{du}{dx}&=& 5(1+ \frac{512(67cos(\frac{61\pi x}{4})- 61cos(\frac{67\pi x}{4}))}{4087\pi} - \frac{512(67cos(\frac{61\pi }{4})- 61cos(\frac{67\pi}{4}))}{4087\pi})\nonumber\\
+&=&5(\frac{512(67cos(\frac{61\pi x}{4})- 61cos(\frac{67\pi x}{4}))}{4087\pi} +1 - \frac{1536 \sqrt{2}}{4087\pi})
+\end{eqnarray}
+
+Integrating $\frac{du}{dx}$ and applying the boundary condition at x=0, we obtain the analytical solution for the differencial equation:
+
+\begin{eqnarray}
+u(x)&=& 5\frac{4087\pi x + 1536\sqrt{2}x + \frac{137216sin(\frac{61\pi x}{4})}{61\pi}- \frac{124928sin(\frac{67\pi x}{4}))}{67\pi}}{4087\pi}
 \end{eqnarray}
 
 
@@ -87,10 +103,12 @@ u(x)&=& 5\frac{4087\pi x + 1536\sqrt{2}x + \frac{137216sin(\frac{61\pi x}{4})}{6
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Finite Element Method}
-The first step of FEM is to derive the weak form of the differential equation: 
+The first step of FEM is to derive the weak form of the differential equation:
+
+Find u, u|$\Gamma u$ =d, such that $\forall v$, v|$\Gamma u$ =0
 
 \begin{eqnarray}
-\int_{\Omega} \frac{dv}{dx} A_1 \frac{du}{dx} dx = \int_{\Omega} fv dx + A_1 \frac{du}{dx} v \mid _{\Gamma t}
+\int_{\Omega} \frac{dv}{dx} A_1 \frac{du}{dx} dx = \int_{\Omega} fv dx + tv \mid _{\Gamma t}
 \end{eqnarray}
 
 
@@ -131,7 +149,9 @@ K a &=& R
 \end{eqnarray}
 
 
-In this homework, piece-wise linear, quadratic or cubic basis functions are used. The numerical computation is carried over the corresponding master elements and mapped to the global elements. Shape functions are defined for elements with different polynomial orders(figure \ref{fig:shape}).
+In this homework, piece-wise linear, quadratic or cubic basis functions are used. The numerical computation is carried over the corresponding master elements and mapped to the global elements. 
+
+Shape functions are defined for elements with different polynomial orders(figure \ref{fig:shape}).
 
 Linear shape functions are:
 \begin{eqnarray}
@@ -206,18 +226,20 @@ Corresponding global coordinate x can be calculate x from $\xi$:
 \begin{equation}
 x = \sum{\chi _i \hat{\phi _i}}
 \end{equation} 
-where $\chi_i$ are the coordinates of the nodes in the global element.  
+where $\chi_i$ are the coordinates of the nodes in the global element. 
+
+The method to compute the matrices K and R element by element and assembling procedures are the same as in homework 1. The difference for higher order elements is the size of Ke and Re.   
 
 \subsection{Apply the boundary conditions}
 
-After computing the matrices K and R element by element and assembling them, one needs to modify the K and R matrices in order to incorporate the boundary conditions. In this homework, we deal with two types of boundary conditions: 
+ After inital implementation of K and R matrices, one needs to modify them in order to incorporate the boundary conditions. In this homework, we deal with the two types of boundary conditions discussed in the following section.
 
 \subsubsection{Dirichlet boundary condition}
-Dirichlet boundary condition gives the value of u on an end point(x=0 or x=L), i.e the value of a(0 or N). We force the test function v(0) =0. The implementation of Dirichlet boundary condition in 1D is to modify the first or the last line of K and R for boundary condition at the left or right end of the domain.
+Dirichlet boundary condition gives the value of u at an end point(x=0 or x=L), i.e the value in solution vector a(0 or N). We force the test function v(0) =0 at these boundaries. The implementation of Dirichlet boundary condition in 1D is to modify the first or the last line of K and R for boundary condition at the left or right end of the domain.
 
 For Dirichlet BC on u(0):
 
-K(1,1) =1 and K(1, 2:N) =0 
+\indent K(1,1) =1 and K(1, 2:N) =0 
 
 R(1) = u(0)
 
@@ -227,24 +249,25 @@ K(N,N) =1 and K(N, 1:N-1) =0
 
 R(N) = u(L)
 
-a = K/R results in for the line corresponds to Dirichlet boundary condition: 
+After the modification, a = K/R results in for the line corresponds to Dirichlet boundary condition: 
 
 a(1) = R(1)/K[1,1] = R(1)
 
 or
  
 a(N) = R(N)/K[N,N] = R(N) 
+
 \subsubsection{Neumann boundary condition}
-Neumann boundary condition gives the value of $A1(x)\frac{du}{dx}$ on an end point.
+Neumann boundary condition gives the value of traction $A1(x)\frac{du}{dx}$ on an end point.
 
 For Neumann BC on x=0:
 
-$R(1) = R(1) + A_1 \frac{du}{dx}[x=0] $
+ $R(1) = R(1) + A_1 \frac{du}{dx}[x=0] $
 
 
 For Neumann BC on x=L:
 
-$R(N)=R(N)+ A_1 \frac{du}{dx}[x=L] $
+ $R(N)=R(N)+ A_1 \frac{du}{dx}[x=L] $
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gaussian Quadrature Integration}
@@ -255,9 +278,9 @@ The integration of a function f over the domain [-1 ,1] can be computed numerica
 \int_{-1}^1 f(\xi) d\xi = \sum_{i=1}^N w_i f(\xi _i)
 \end{eqnarray}
 
-Increasing the number of Gaussian quadrature points increase the precision of the integration result only up to a certain point. For a N order polynomial integration, (N+1)/2 points is enough for an exact result. More Gaussian point would cost computation time. So it's important to optimize the number of GQ points used for each integration. 
+Increasing the number of Gaussian quadrature points increase the precision of the integration result, but only up to a certain point. For a N order polynomial integration, (N+1)/2 points is enough for an exact result. More Gaussian point would cost unnecessary computation time. So it's important to optimize the number of GQ points used for each integration. 
 
-5 points GQ integration is used for cubic element calculation.
+5 points GQ integration is used for quadratic and cubic element calculation. 3 points GQ integration is used for linear element calculation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Error Calculations}
@@ -283,7 +306,7 @@ To compute the error numerically, we calculate the two following quantities elem
 %section postprocessing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Postprocessing}
-Following the same procedures as in homework 1 would give the matrix A for the system. However, the postprocessing is more complicated for higher order element. In order to plot the result, we calculate the value of the numerical solution for 10 points in each elements. For any given $\xi$, the corresponding value for the solution is straightforward:
+The postprocessing is more complicated for higher order element. In order to plot the result, we calculate the value of the numerical solution for 10 points in each elements. For any given $\xi$, the corresponding value for the solution is calculated, as well as the global coordinate x for the given $\xi$:
 
 \begin{eqnarray}
  u(x) &=& u(x(\xi))=\sum_{i=1}^{P+1} a_i^e \hat{\phi_i}\nonumber\\
@@ -298,8 +321,8 @@ For each element, we can also calculate the derivative of u(x):
 
 \section{Results}
 
-Minimum number of elements and number of nodes to achieve to error criteria for different order of elements are tabulated bellow: 
-
+Minimum number of elements and number of nodes to achieve to error criteria for different order of elements are tabulated bellow. $N_{Opt}$ drops dramatically with the order of the elements. 
+\begin{table}
 \begin{center}
   \begin{tabular}{ l | c | c}
     \hline
@@ -309,7 +332,9 @@ Minimum number of elements and number of nodes to achieve to error criteria for 
     3 & 34 & 103\\ \hline
     \hline
   \end{tabular}
+  \caption{Minimum number of nodes needed for the error criteria}
 \end{center}
+\end{table}
 
 The numerical solution and the analytical solution are compared in figure \ref{fig:solution}. 
 
@@ -338,43 +363,48 @@ The numerical solution and the analytical solution are compared in figure \ref{f
                 \label{fig:k8}
         \end{subfigure}
 
-        \caption{Comparison of analytical solution and numerical solution}\label{fig:solution}
+        \caption{Comparison of analytical solution and numerical solution at optimum number of element}\label{fig:solution}
 \end{figure}
 
 \subsection{Relationship between the error and the element size}
-If the element size is too big, the numerical solution is far from the real solution, it's not interesting to study the relationship between error and element size in this region. So we study the correlation in the region around the 
+Error estimate for FEM is:
+\begin{eqnarray}
+e^N \leq Ch^{\gamma = min (r-1, P)}
+\end{eqnarray}
+r is smoothness, and P is the polynomial order.
+
+From the error plotting, we can observe the linear relation between $log(e^N)$ and $log(h)$, 
+
+\begin{eqnarray}
+\gamma = 0.98, P=1\nonumber\\
+\gamma = 1.98, P=2\nonumber\\
+\gamma = 2.93, P=3\nonumber\\
+\end{eqnarray}
+
+Overall, $\gamma$ is similar  to P. 
+
 \begin{figure}
         \centering
         \begin{subfigure}[b]{0.8\textwidth}
-                \includegraphics[width=\textwidth]{error_P1.eps}
-                \caption{error(P=1)}
+                \includegraphics[width=\textwidth]{error_DOF.eps}
                 \label{fig:e1}
-        \end{subfigure}%
-
-        %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-          %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[b]{0.8\textwidth}
-                \includegraphics[width=\textwidth]{error_P2.eps}
-                \caption{error(P=2)}
-                \label{fig:e2}
-        \end{subfigure}
-        %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-          %(or a blank line to force the subfigure onto a new line)
-        
-        \begin{subfigure}[b]{0.8\textwidth}
-                \includegraphics[width=\textwidth]{error_P3.eps}
-                \caption{error(P=3)}
-                \label{fig:e3}
         \end{subfigure}
 
         \caption{Evoluation of numerical error with number of elements}\label{fig:error}
 \end{figure}
 
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.8\textwidth}
+                \includegraphics[width=\textwidth]{error_h.eps}
+                \label{fig:e1}
+        \end{subfigure}
 
-
+        \caption{Evoluation of numerical error with number of elements}\label{fig:error}
+\end{figure}
 
 \section{Conclusion}
 
-This homework extends the previous one to higher order of element. Having higher order element shape functions can capture the fluctuations 
+This homework extends the previous one to higher order of element. Having higher order element shape functions can reduce the number of degree of freedom needed for solving the problem by better capturing the fluctuations in the solution. 
 
 \end{document}
