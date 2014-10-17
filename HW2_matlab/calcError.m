@@ -5,7 +5,7 @@ denominator=0;
 
 Q=5;
 if P==1
-    coord_elem_ksi = [-1, 1];
+    coord_elem_ksi = [-1.0, 1.0];
 elseif P==2
     coord_elem_ksi = [-1,0,1];
 elseif P==3
