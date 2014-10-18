@@ -42,27 +42,6 @@ close all;    % Close previously opened figure windows
 % ************************************************************************
 % Define variables
 % ************************************************************************
-if  x>=0.0 && x< 0.1
-    A1Func  = @(x) -2.0;    % These can be functions of x, e.g. 'sin(x)+ x^2'
-elseif x>=0.1 && x<0.2
-    A1Func  = @(x) -2.5;    
-elseif x>=0.2 && x<0.3
-    A1Func  = @(x) -1.25;
-elseif x>=0.3 && x<0.4
-    A1Func  = @(x) -0.25;
-elseif x>=0.4 && x<0.5
-    A1Func  = @(x) -4.0;
-elseif x>=0.5 && x< 0.6
-    A1Func  = @(x) -1.75;
-elseif x>=0.6 && x<=0.7
-    A1Func  = @(x) -0.5;
-elseif x>=0.7 && x<=0.8
-    A1Func  = @(x) -0.75;
-elseif x>=0.8 && x<=0.9
-    A1Func  = @(x) -3.25;
-elseif x>=0.9 && x<=1.0
-    A1Func  = @(x) -1.0;
-end
 
 fFunc  = @(x) 256*sin(3/4*pi*x)*cos(16*pi*x);%'k^2*sin(pi*k*x/L)+ 2*x';
 
@@ -96,7 +75,7 @@ N = P*Ne +1;
 coord = linspace(xMin, xMax, N);
 
 
-matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
+matA = make_K_R(P, Ne, coord, fFunc,type_bc_l, v0, type_bc_r, vl);
  % use backslash operator of MATLAB instead of inv()
 
 
@@ -105,12 +84,12 @@ errorTol = 0.010;
 error =1;
 %calculate the error of approximation  
 
-while error > errorTol  && Ne<10000
+while error > errorTol  && Ne<100
     Ne = 2* Ne;
     N = P*Ne +1;
     coord = linspace(xMin, xMax, N);
-    matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
-    error = calcError(P, Ne, A1Func, dux, matA,coord);
+    matA = make_K_R(P, Ne, coord, fFunc,type_bc_l, v0, type_bc_r, vl);
+    error = calcError(P, Ne, dux, matA,coord);
 end
 display(Ne);
 Ne_max = Ne;
@@ -120,8 +99,8 @@ while Ne_max-Ne_min > 2
     Ne_Opt = ceil((Ne_max+Ne_min)/2);
     N = P*Ne_Opt +1;
     coord = linspace(xMin, xMax, N);
-    matA = make_K_R(P, Ne_Opt, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
-    error = calcError(P, Ne_Opt, A1Func,dux, matA,coord);
+    matA = make_K_R(P, Ne_Opt, coord, fFunc,type_bc_l, v0, type_bc_r, vl);
+    error = calcError(P, Ne_Opt, dux, matA,coord);
     if error > errorTol
         Ne_min = Ne_Opt;
         %display(Ne_min);

@@ -132,3 +132,4 @@ set(0, 'defaultFigurePaperPosition', defsize);
     hold off;
 set(gca,'XTick',-3:3); %<- Still need to manually specific tick marks
 set(gca,'YTick',0:10); %<- Still need to manually specific tick marks
+

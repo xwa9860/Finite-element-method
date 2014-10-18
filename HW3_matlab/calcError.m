@@ -1,4 +1,4 @@
-function error = calcError( P, Ne, A1Func, dux, AMat, coord)
+function error = calcError( P, Ne, dux, AMat, coord)
 %calculate the error of approximation  
 numeritor=0;
 denominator=0;

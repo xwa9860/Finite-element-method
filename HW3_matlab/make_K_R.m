@@ -1,4 +1,4 @@
-function A = make_K_R(P, Ne, nodeCoord, A1Func, fFunc, l_BC_type, value_Left, r_BC_type, value_Right)
+function A = make_K_R(P, Ne, nodeCoord, fFunc, l_BC_type, value_Left, r_BC_type, value_Right)
     
 %{
 ***************************************************************************
