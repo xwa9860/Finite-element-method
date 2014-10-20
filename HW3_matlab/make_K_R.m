@@ -54,7 +54,7 @@ for e=1:Ne
         KE_table (e, 2) = KE_table(e, 1)+(-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);  
         i=2; j=2;
         KE_table (e, 3) = KE_table(e, 1)+(-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);    
-    end
+    
     
     % Calculate Re
     for i = 1:(P+1)
@@ -76,6 +76,7 @@ for e=1:Ne
     R(R_index) = R(R_index)+Re(k+1);
     R_index=R_index+1;
     end
+    
     R_index=R_index-1;
 
 

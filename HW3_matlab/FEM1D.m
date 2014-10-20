@@ -30,8 +30,8 @@ Ne =   100;
 P =1;
 N = P*Ne +1;
 coord = linspace(xMin, xMax, N);
-[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
-[matA, error] = CG_solver(K, R, 1e-8);
+[KE_table, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
+[matA, error] = CG_solver_KE_table(KE_table, R, 1e-8);
 %matA = K\R;
 
 %ux_arr_2 =zeros(N, 1);

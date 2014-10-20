@@ -28,12 +28,12 @@ end
 A = zeros(N+1, 1);
 r = -KE_multi(KE_table, A) + R;
 Z = - KE_multi(KE_table, A) + R;
-lambda = transpose(Z) * r / (transpose(Z) * KE_multi(K, Z));
+lambda = transpose(Z) * r / (transpose(Z) * KE_multi(KE_table, Z));
 A = A + lambda * Z;
 
 error = 1;
 while error > tol 
-    r = -KE_multi(K, A) + R;
+    r = -KE_multi(KE_table, A) + R;
     theta = - transpose(r) * KE_multi(KE_table , Z)/ (transpose(Z)*KE_multi(KE_table, Z));
     Z = r + theta * Z;
     lambda = transpose(Z) * r / (transpose(Z) * KE_multi(KE_table, Z));
@@ -41,6 +41,6 @@ while error > tol
     error = abs(lambda)* sqrt( transpose(Z) * KE_multi(KE_table, Z)) /sqrt(transpose(A) * KE_multi(KE_table, A));
     A=A_new;
 end
-A = T*A;
+A = diag(T)*A;
 
 
