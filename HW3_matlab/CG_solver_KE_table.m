@@ -8,13 +8,13 @@ N = size(KE_table, 1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %preconditioning acceleration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-T= precond_KE_table(KE_table);%T array Ne*1
+T= precond_KE_table(KE_table)%T array Ne*1
 
 %K = transpose(T) * K * T;
 for i=1:N
-    for j = 1:3
-        KE_table(i,j) = T(i) * KE_table(i,j) *T(j);  
-    end
+        KE_table(i,1) = T(i) * KE_table(i,1) *T(i); 
+        KE_table(i,2) = T(i) * KE_table(i,2) *T(i+1); 
+        KE_table(i,3) = T(i+1) * KE_table(i,3) *T(i+1); 
 end
 
 %R = transpose(T) * R;

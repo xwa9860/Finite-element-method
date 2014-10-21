@@ -231,6 +231,39 @@ ke\_table = \{ k_{11}^1, k_{12}^1, k_{22}^1 \\
                k_{11}^2, k_{12}^2, k_{22}^2 \} 
 \end{eqnarray}
  
+ \subsection{Boundary condition}
+
+As discussed in the previous homeworks, for Dirichlet BC on u(0):
+
+Apllying K(1,1) =1 and K(1, 2) =0 
+
+R(1) = u(0)
+
+For Dirichlet BC on u(L):
+
+K(N,N) =1 and K(N, 1:N-1) =0 
+
+R(N) = u(L)
+
+After the modification, a = K/R results in for the line corresponds to Dirichlet boundary condition: 
+
+a(1) = R(1)/K[1,1] = R(1)
+
+or
+ 
+a(N) = R(N)/K[N,N] = R(N) 
+
+\subsubsection{Neumann boundary condition}
+Neumann boundary condition gives the value of traction $A1(x)\frac{du}{dx}$ on an end point.
+
+For Neumann BC on x=0:
+
+ $R(1) = R(1) + A_1 \frac{du}{dx}[x=0] $
+
+
+For Neumann BC on x=L:
+
+ $R(N)=R(N)+ A_1 \frac{du}{dx}[x=L] $
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Section: preconditioned conjugate-gradiant solver
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
