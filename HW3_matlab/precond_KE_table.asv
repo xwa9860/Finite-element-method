@@ -1,4 +1,4 @@
-function [KE_table_cond, T] = precond_KE_table(KE_table)
+function KE_table_cond, = precond_KE_table(KE_table)
 N=size(KE_table,1);
 T = zeros(N+1, 1);
 

@@ -13,7 +13,7 @@ close all;    % Close previously opened figure windows
 % ************************************************************************
 % Define the equation
 % ************************************************************************
-fFunc  = @(x) 256*sin(3/4*pi*x)*cos(16*pi*x);%'k^2*sin(pi*k*x/L)+ 2*x';
+fFunc  = @(x) -256*sin(3/4*pi*x)*cos(16*pi*x);%'k^2*sin(pi*k*x/L)+ 2*x';
 
 L=1;
 xMin   =  0;
@@ -26,14 +26,15 @@ vl     = 1;    % bourdary value at xMax
 
 %Ne_array= [100, 1000, 10000];
 %for k = 1:3
-Ne =   100;  
+Ne = 100;  
 P =1;
 N = P*Ne +1;
 coord = linspace(xMin, xMax, N);
-[KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
-[matA, error] = CG_solver_KE_table(KE_table, R, 1e-8);
+[KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
+[KE_table_cond, T]= precond_KE_table(KE_table)
+[matA1, error] = CG_solver_KE_table(KE_table_cond, T, R, 1e-8);
 
-%[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
+[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
 %matA = K\R;
 %[matA, error] = CG_solver(K, R, 1e-8);
 
@@ -43,7 +44,9 @@ for i=1:N
     ux_arr(i) = ana_sol_calculator(coord(i));
     %ux_arr_2(i) = ux_2(coord(i));
 end
-plot(coord, matA,'o');
+%plot(coord, matA,'o');
+
+plot(coord, matA1,'o');
 hold all on;
 optimized_plot(coord, ux_arr);
 %optimized_plot(coord, ux_arr_2)

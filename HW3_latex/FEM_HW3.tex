@@ -157,7 +157,7 @@ The first step of FEM is to derive the weak form of the differential equation:
 Find u, u|$\Gamma u$ =d, such that $\forall v$, v|$\Gamma u$ =0
 
 \begin{eqnarray}
-\int_{\Omega} \frac{dv}{dx} A_1 \frac{du}{dx} dx = \int_{\Omega} fv dx + tv \mid _{\Gamma t}
+\int_{\Omega} \frac{dv}{dx} A_1(x) \frac{du}{dx} dx = \int_{\Omega} fv dx + tv \mid _{\Gamma t}
 \end{eqnarray}
 
 
@@ -179,20 +179,20 @@ where N is the number of degree of freedom(number of nodes).
 Then the equation becomes:
 
 \begin{eqnarray}
-\int_{\Omega} \frac{d}{dx} (\sum_{j=1}^{N+1} a_j \phi_j(x)) A_1 \frac{d}{dx} (\sum_{i=1}^{N+1} b_i \phi_i(x))dx = \int_{\Omega} f (\sum_{i=1}^{N+1} b_i \phi_i(x)) dx + (\sum_{i=1}^{N+1} b_i \phi_i(x) t) \mid _{\Gamma t}, \forall b_i
+\int_{\Omega} \frac{d}{dx} (\sum_{j=1}^{N+1} a_j \phi_j(x)) A_1(x) \frac{d}{dx} (\sum_{i=1}^{N+1} b_i \phi_i(x))dx = \int_{\Omega} f (\sum_{i=1}^{N+1} b_i \phi_i(x)) dx + (\sum_{i=1}^{N+1} b_i \phi_i(x) t) \mid _{\Gamma t}, \forall b_i
 \end{eqnarray}
 
 
 We can regroup the terms into:
 
 \begin{eqnarray}
-\sum_{i=1}^{N+1} b_i \int_{\Omega} (\sum_{j=1}^{N+1} a_j \frac{d}{dx} \phi_j(x) A_1 \frac{d}{dx} \phi_i(x)) dx = \sum_{i=1}^{N+1} b_i \int_{\Omega} f \phi_i(x) dx + \sum_{i=1}^{N+1} b_i (\phi_i(x) t) \mid _{\Gamma t}
+\sum_{i=1}^{N+1} b_i \int_{\Omega} (\sum_{j=1}^{N+1} a_j \frac{d}{dx} \phi_j(x) A_1(x) \frac{d}{dx} \phi_i(x)) dx = \sum_{i=1}^{N+1} b_i \int_{\Omega} f \phi_i(x) dx + \sum_{i=1}^{N+1} b_i (\phi_i(x) t) \mid _{\Gamma t}
 \end{eqnarray}
 
 As the equation should be valid for any $b_i$, we obtain the matrix system to solve:
  
 \begin{eqnarray}
-K_{ij} &=& \int_{\Omega} \frac{d}{dx} \phi_j(x) A_1 \frac{d}{dx} \phi_i(x) dx \nonumber\\
+K_{ij} &=& \int_{\Omega} \frac{d}{dx} \phi_j(x) A_1(x) \frac{d}{dx} \phi_i(x) dx \nonumber\\
 R_i &=& \int_{\Omega} f \phi_i(x) dx + \phi_i(x) t \mid _{\Gamma t}\nonumber\\
 K a &=& R
 \end{eqnarray}
@@ -224,26 +224,43 @@ where $\chi_i$ are the coordinates of the nodes in the global element.
 
 The method to compute the matrices K and R element by element and assembling procedures are the same as in homework 1. The difference for higher order elements is the size of Ke and Re.   
 
-The data structure used for store the matrix K is a 3xN matrix where only three numbers in the 2x2 element K matrix are stores.
+Matrix K is assembled from symmetric 2x2 element matrices. The economical data structure used to store only the three elements in Ke.
 
 \begin{eqnarray}
-ke\_table = \{ k_{11}^1, k_{12}^1, k_{22}^1 \\
-               k_{11}^2, k_{12}^2, k_{22}^2 \} 
+KE_{table} = 
+\begin{matrix}
+K_{11}^1& K_{12}^1& K_{22}^1 \\
+K_{11}^2& K_{12}^2& K_{22}^2 \\
+ &...&\\
+K_{11}^{Ne}& K_{12}^{Ne}& K_{22}^{Ne}         
+\end{matrix}
 \end{eqnarray}
+
+The multiplication operation K * T is ...
  
- \subsection{Boundary condition}
+\subsection{Applying boundary condition to KE table and R}
 
 As discussed in the previous homeworks, for Dirichlet BC on u(0):
-
-Apllying K(1,1) =1 and K(1, 2) =0 
-
-R(1) = u(0)
+\begin{align*}
+K(1,1)& =&1, K(1, 2) =0 \\
+R(1) &=& u(0)\\
+\Longleftrightarrow\\
+R(1)&=&u(0)\\
+R(2)&=&R(2)-KE_{table} (1,2) * u(0)\\
+KE_{table} (1, 1)& =&1, KE_{table} (1, 2) =0
+\end{align*}
 
 For Dirichlet BC on u(L):
+\begin{align*}
+K(N,N) &=&1,K(N, 1:N-1) =0\\ 
+R(N) &=& u(L) \\
+\Longleftrightarrow\\
+R(N)&=&u(L)\\
+R(N-1)&=&R(N-1)-KE_{table} (N-1,2) * u(L)\\
+KE_{table} (N-1, 3)& =&1, KE_{table} (N-1, 2) =0
+\end{align*}
 
-K(N,N) =1 and K(N, 1:N-1) =0 
 
-R(N) = u(L)
 
 After the modification, a = K/R results in for the line corresponds to Dirichlet boundary condition: 
 

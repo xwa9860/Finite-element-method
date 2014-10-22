@@ -59,7 +59,7 @@ for e=1:Ne
     % Calculate Ke
     for i=1:(P+1)   
         for j = 1:(P+1)
-            Ke(i,j) = Ke(i,j) + (-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);     
+            Ke(i,j) = Ke(i,j) + (A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);     
        end
     end
 
@@ -111,7 +111,7 @@ if l_BC_type==1
         error('does not support higher order than P=3');
     end%if
 elseif l_BC_type ==2
-     R(1) = R(1)- value_Left;    
+     R(1) = R(1) + value_Left;    
 end
     
 % At x = xMax
@@ -132,7 +132,7 @@ if r_BC_type ==1
     
     VV(nval-1) = 1; %K[N,N]
 elseif r_BC_type ==2
-    R(N) = R(N) - value_Right;    
+    R(N) = R(N) + value_Right;    
 end
         
 

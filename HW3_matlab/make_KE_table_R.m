@@ -38,11 +38,11 @@ for e=1:Ne
         Jacob = 0.5 * (nodeCoord(Nr) - nodeCoord(Nl));
 
         i=1; j=1;
-        KE_table (e, 1) = KE_table(e, 1)+(-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);  
+        KE_table (e, 1) = KE_table(e, 1)+(A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);  
         i=1; j=2;
-        KE_table (e, 2) = KE_table(e, 2)+(-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);  
+        KE_table (e, 2) = KE_table(e, 2)+(A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);  
         i=2; j=2;
-        KE_table (e, 3) = KE_table(e, 3)+(-A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);    
+        KE_table (e, 3) = KE_table(e, 3)+(A1Func(x_ksi) *dShape(i)/Jacob * dShape(j)/Jacob) * Jacob * GQweight(q);    
     
     
         % Calculate Re
@@ -71,22 +71,22 @@ end%all element
 % At x = xMin
 if l_BC_type==1
     R(1) = value_Left;
-    R(2) = R(2) - KE_table(1,2)*value_Left;
+    R(2) = R(2) + KE_table(1,2)*value_Left;
     KE_table(1,2) = 0;
     KE_table(1,1) = 1;
 
 elseif l_BC_type ==2
-     R(1) = R(1) - value_Left;    
+     R(1) = R(1) + value_Left;    
 end
     
 % At x = xMax
 if r_BC_type ==1
     R(N) = value_Right;
-    
-    KE_table(N, 3)=1;
-    KE_table(N, 2)=0;
+    R(N-1) = R(N-1) - KE_table(N,2)*value_Right;
+    KE_table(N-1, 3)=1;
+    KE_table(N-1, 2)=0;
 elseif r_BC_type ==2
-    R(N) = R(N) - value_Right;    
+    R(N) = R(N) + value_Right;    
 end
         
 
