@@ -143,40 +143,30 @@ close all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test matlab CG solver
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% A=[1;2;3]
-% K = [1/5.0,-1/5.0, 0; 
-%     -1/5.0, 2/5.0 1/5.0; 
-%         0, 1/5.0 1/5.0 
-%    ]
+A=[1;2;3]
+K = [1/5.0,-1/5.0, 0; 
+    -1/5.0, 2/5.0 1/5.0; 
+        0, 1/5.0 1/5.0 
+   ]
 
 % A = [1;2]
 % K = [1/5.0,-1/5.0; 
 %      -1/5.0, 2/5.0]
-% R=K*A
-%KE_table=[1/5.0, -1/5.0, 1/5.0; 1/5.0, 1/5.0, 1/5.0];
+R=K*A
+KE_table=[1/5.0, -1/5.0, 1/5.0; 1/5.0, 1/5.0, 1/5.0];
 
-% N = size(KE_table, 1);
-% T=precond_mat(K)
-% 
-% K_cond = T*K*T
-% 
-% T= precond_KE_table(KE_table)
-% 
-% 
-%  
-% for i=1:N
-%         KE_table(i,1) = T(i) * KE_table(i,1) *T(i); 
-%         KE_table(i,2) = T(i) * KE_table(i,2) *T(i+1); 
-%         KE_table(i,3) = T(i+1) * KE_table(i,3) *T(i+1); 
-% end
-% 
-% display(KE_table)
-
- %[A1, error] = CG_solver (K, R, 1e-6)
- %[x2,fl, relres] = pcg(K,R,1e-10)
- %[A1, error1]= CG_solver_KE_table(KE_table, R, 1e-6)
+N = size(KE_table, 1);
 
 
+[KE_table,T]= precond_KE_table(KE_table)
+
+
+ [A1, error] = CG_solver (K, R, 1e-6)
+ 
+ %[x2,fl, relres] = pcg(K, R,1e-10)
+ [A2, error1]= CG_solver_KE_table(KE_table, T, R, 1e-6)
+K*A2
+K*A1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test analytical solution function ana_sol
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -202,7 +192,12 @@ close all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %test KE_multiply
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% KE_table = [1,2,3]
-% q=[1;2]
-% y=zeros(2,2)
-% y = KE_multi(KE_table, q)
+%  KE_table = [1,2,3;
+%                3,4,5]
+%  q=[1;2;3]
+% 
+% y = KE_multi(KE_table, q);
+% K=[1,2,0;
+%     2,6,4;
+%     0,4,5]
+% x=K*q;

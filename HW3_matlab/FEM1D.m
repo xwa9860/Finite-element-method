@@ -30,11 +30,13 @@ Ne = 100;
 P =1;
 N = P*Ne +1;
 coord = linspace(xMin, xMax, N);
-[KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
-[KE_table_cond, T]= precond_KE_table(KE_table)
-[matA1, error] = CG_solver_KE_table(KE_table_cond, T, R, 1e-8);
+[KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
 
-[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
+[matA1, error] = CG_solver_KE_table(KE_table, R, 1e-8);
+
+%[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
+
+
 %matA = K\R;
 %[matA, error] = CG_solver(K, R, 1e-8);
 
@@ -49,7 +51,7 @@ end
 plot(coord, matA1,'o');
 hold all on;
 optimized_plot(coord, ux_arr);
-%optimized_plot(coord, ux_arr_2)
+%optimized_plot(coord, ux_arr_2,'--')
 
 legend('numerical solution', 'analytical solution')
 
