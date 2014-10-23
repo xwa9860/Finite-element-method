@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1413783597 "FEM_HW3.tex" "FEM_HW3.pdf" "FEM_HW3" 1413783597
+["pdflatex"] 1414018358 "FEM_HW3.tex" "FEM_HW3.pdf" "FEM_HW3" 1414018359
   "/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2014/texmf-dist/tex/generic/babel-english/english.ldf" 1367878877 6963 2e0cb3d93aa64508bdb0db58ae900d97 ""
   "/usr/local/texlive/2014/texmf-dist/tex/generic/babel/babel.def" 1395780385 49536 e1475dd245ff2196764ba5b91ac63714 ""
@@ -52,9 +52,9 @@
   "/usr/local/texlive/2014/texmf-dist/tex/latex/parskip/parskip.sty" 1285887441 2763 02a40cc5a32805c41d919cfbdba7e99a ""
   "/usr/local/texlive/2014/texmf-dist/tex/latex/pdftex-def/pdftex.def" 1306616590 55368 3c8a0d99822330f2dfabc0dfb09ce897 ""
   "/usr/local/texlive/2014/texmf-dist/tex/latex/sectsty/sectsty.sty" 1137110779 22423 d476012cd03f82f9475ad54ba6cd3267 ""
-  "FEM_HW3.aux" 1413783597 1342 caee67e6456afaae5d6a455bb4e3daaa ""
-  "FEM_HW3.tex" 1413783595 18668 8cb8bfc4566c601f9b17fd3fd982415a ""
+  "FEM_HW3.aux" 1414018359 1619 f6a6a7328b3895662564b1a1cf950767 ""
+  "FEM_HW3.tex" 1414018357 20880 ea0ef1777a7810c4b7749d2b0847d16c ""
   (generated)
   "FEM_HW3.pdf"
-  "FEM_HW3.log"
   "FEM_HW3.aux"
+  "FEM_HW3.log"

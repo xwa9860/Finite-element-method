@@ -24,36 +24,36 @@ v0     = 0;    % boundary value at xMin
 type_bc_r=2;
 vl     = 1;    % bourdary value at xMax
 
-%Ne_array= [100, 1000, 10000];
-%for k = 1:3
-Ne = 100;  
-P =1;
-N = P*Ne +1;
-coord = linspace(xMin, xMax, N);
-[KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
+it_arr = zeros(3, 1); % record PCG_solver iteration number
+error_arry = zeros(3,1); % record the numerical error
+Ne_array= [100, 1000, 10000];
+for k = 1:3
+    Ne = Ne_array(k);  
+    P =1;
+    N = P*Ne +1;
+    coord = linspace(xMin, xMax, N);
+    [KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
 
-[matA1, error] = CG_solver_KE_table(KE_table, R, 1e-8);
-
-%[K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl)
-
-
-%matA = K\R;
-%[matA, error] = CG_solver(K, R, 1e-8);
-
-%ux_arr_2 =zeros(N, 1);
-ux_arr =zeros(N, 1);
-for i=1:N
-    ux_arr(i) = ana_sol_calculator(coord(i));
-    %ux_arr_2(i) = ux_2(coord(i));
+    [matA1, error, it] = CG_solver_KE_table(KE_table, R, 1e-3);
+   
+    numerical_error = calcError(1, Ne, matA1,coord);
+    it_arr(k) =it;
+    error_arry(k) = numerical_error;
+    optimized_plot(coord, matA1);
+    hold all on;
+    
 end
-%plot(coord, matA,'o');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%plot analytical solution
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-plot(coord, matA1,'o');
-hold all on;
+ux_arr =zeros(N, 1);
+    for i=1:N
+        ux_arr(i) = ana_sol_calculator(coord(i));
+    end
+    
 optimized_plot(coord, ux_arr);
-%optimized_plot(coord, ux_arr_2,'--')
-
-legend('numerical solution', 'analytical solution')
+legend('Ne=100', 'Ne=1000', 'Ne=10000', 'analytical solution')
 
 % % %find the optimal number of element to achieve the error criteria
 % errorTol = 0.010;

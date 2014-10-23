@@ -1,4 +1,4 @@
-function [A, error] = CG_solver_KE_table (KE_table, R, tol)
+function [A, error, it] = CG_solver_KE_table (KE_table, R, tol)
 
 %{
 find the a for K a=R
@@ -34,7 +34,7 @@ r = -KE_multi(KE_table, A) + R
 Z = - KE_multi(KE_table, A) + R
 lambda = transpose(Z) * r / (transpose(Z) * KE_multi(KE_table, Z))
 A = A + lambda * Z
-
+it=1;
 error = 1;
 while error > tol 
     r = -KE_multi(KE_table, A) + R
@@ -44,6 +44,7 @@ while error > tol
     A_new = A + lambda * Z;
     error = abs(lambda)* sqrt( ( transpose(Z) * KE_multi(KE_table, Z)) /(transpose(A) * KE_multi(KE_table, A)));
     A=A_new;
+    it=it+1;
 end
 
 for i =1:N+1

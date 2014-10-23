@@ -58,7 +58,10 @@
 \maketitle % Print the title
 
 \newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+
 The objective of this project is to solve a 1-D differential equation using linear elements.  
 
 \begin{eqnarray}
@@ -102,24 +105,25 @@ A_1(x)\frac{du}{dx}&=& \int 256sin(\frac{3\pi kx}{4})cos(16 \pi x) dx\nonumber\\
 \frac{du}{dx} &=& \frac{1}{A_1(x)} (\frac{ 512( 67cos( \frac{61\pi x}{4} )- 61cos( \frac{67\pi x}{4} ) ) }  {4087\pi} + C1)
 \end{eqnarray}
 
-Integrating $\frac{du}{dx}$ and applying the boundary condition at x=0, we obtain the analytical solution for the differencial equation:
+Integrating $\frac{du}{dx}$, we obtain the analytical solution for the differencial equation:
 
 \begin{eqnarray}
-u(x)&=& \frac{\frac{137216sin(\frac{61\pi x}{4})}{61\pi}- \frac{124928sin(\frac{67\pi x}{4}))}{67\pi}}{4087\pi} + \frac{C1x} {A_1(x)} + C2
+u(x)&=& \frac{1}{A1(x)}\frac{\frac{137216sin(\frac{61\pi x}{4})}{61\pi}- \frac{124928sin(\frac{67\pi x}{4}))}{67\pi}}{4087\pi} + \frac{C1x} {A_1(x)} + C2
 \end{eqnarray}
 
+where C1 and C2 are piecewise constants that can be calculated using the boundary conditions and interface conditions.
 
-
-At the interface of each segments$x_N$(N=1,...,10), the function u and its derivation is continuous, i.e.,
+At the interface between segments $x_N$ (N=1,...,10), the function u and its derivation is continuous, i.e.,
 
 \begin{eqnarray}
 u(x_N^+) = u(x_N^-) \nonumber\\
-A1(x_N^+)\frac{du} {dx}(x_N^+) = A1(x_N^1)\frac{du}{dx}(x_N^-)
+A1(x_N^+)\frac{du} {dx}(x_N^+) = A1(x_N^-)\frac{du}{dx}(x_N^-)
 \end{eqnarray}
 
-In particular, at the left endpoint, $u(0) = u_0 = 0$ and at the right end point, $A1(L)\frac{du}{dx} (L) = A1(L)(\frac{du}{dx})_N = 1 $ .
 
-Applying these boundary conditions and continuation conditions at the interfaces, we can solve the equation system and obtain the analytical solution:
+In particular, at the left endpoint, $u(0) = u_0 = 0$ and at the right end point, $A1(L)\frac{du}{dx} (L) = 1$ .
+
+Applying the boundary conditions and continuation conditions at the interfaces, we can solve the equation system and obtain the analytical solution:
 
 \begin{eqnarray}
 For & 0.0 \leq x < 0.1 :& C_1 = 1.1692 \nonumber\\
@@ -152,11 +156,15 @@ For & 0.9 \leq x \leq 1.0 :& C_2 = 0.0931
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Finite Element Method}
+
+\subsection{Weak form
+}
 The first step of FEM is to derive the weak form of the differential equation:
 
-Find u, u|$\Gamma u$ =d, such that $\forall v$, v|$\Gamma u$ =0
+
 
 \begin{eqnarray}
+\mbox{Find u, u|$\Gamma$ u =d, such that $\forall$ v, v|$\Gamma$ u =0} \nonumber\\
 \int_{\Omega} \frac{dv}{dx} A_1(x) \frac{du}{dx} dx = \int_{\Omega} fv dx + tv \mid _{\Gamma t}
 \end{eqnarray}
 
@@ -197,12 +205,7 @@ R_i &=& \int_{\Omega} f \phi_i(x) dx + \phi_i(x) t \mid _{\Gamma t}\nonumber\\
 K a &=& R
 \end{eqnarray}
 
-
-In this homework, piece-wise linear, quadratic or cubic basis functions are used. The numerical computation is carried over the corresponding master elements and mapped to the global elements. 
-
-Shape functions are defined for elements with different polynomial orders(figure \ref{fig:shape}).
-
-Linear shape functions are:
+Linear shape functions are defined as:
 \begin{eqnarray}
 \hat{\phi_1} &=& \frac{1-\xi}{2}\nonumber\\
 \hat{\phi_2} &=& \frac{1+\xi}{2}
@@ -222,56 +225,85 @@ x = \sum{\chi _i \hat{\phi _i}}
 \end{equation} 
 where $\chi_i$ are the coordinates of the nodes in the global element. 
 
-The method to compute the matrices K and R element by element and assembling procedures are the same as in homework 1. The difference for higher order elements is the size of Ke and Re.   
+\subsection{Data structure}
 
-Matrix K is assembled from symmetric 2x2 element matrices. The economical data structure used to store only the three elements in Ke.
+Matrix K is assembled from symmetric 2x2 element matrices. KE table is used to store only the three elements in Ke: Ke(1, 1), Ke(1, 2) and Ke(2, 2). The connectivity table stores the endpoints of each mesh element, in the case of 1D meshing, the connectivity table is: 
+
+\begin{eqnarray}
+connectivity = 
+    \begin{pmatrix}
+    1, 2\\
+    2, 3\\
+    3, 4\\
+    \vdots
+    \end{pmatrix}
+\end{eqnarray}
 
 \begin{eqnarray}
 KE_{table} = 
-\begin{matrix}
+\begin{pmatrix}
 K_{11}^1& K_{12}^1& K_{22}^1 \\
 K_{11}^2& K_{12}^2& K_{22}^2 \\
  &...&\\
 K_{11}^{Ne}& K_{12}^{Ne}& K_{22}^{Ne}         
-\end{matrix}
+\end{pmatrix}
+=
+\begin{pmatrix}
+K_{11} & K_{12} & K_{13}\\
+K_{21} & K_{22} & K_{23} \\
+ &...&\\
+K_{N1}& K_{N2} & K_{N3}         
+\end{pmatrix}
 \end{eqnarray}
 
-The multiplication operation K * T is ...
+The multiplication operation of KE table and an array Q (y=KE table * Q)is 
+
+\begin{eqnarray}
+\mbox{Loop through e:} &&\nonumber\\
+Ke &= & KE table[e] \nonumber\\
+Qe &= & Q(connectivity[e]) \nonumber\\
+y_e &= & Ke * Qe \nonumber\\
+y(connectivity[e]) & += & y_e \nonumber\\  
+\end{eqnarray}
+
+
+And the operation of $T^T*K*T$ is:
+
+\begin{eqnarray}
+T^T*K*T = 
+\begin{pmatrix}
+K_{11}T_1T_1 & K_{12}T_1T_2 & K_{13} T_1T_3 \\
+K_{21}T_2T_1 & K_{22}T_2T_2 & K_{23} T_2T_3 \\
+ & \cdots &\\
+K_{N1}T_NT_1 & K_{N2}T_NT_2 & K_{N3} T_NT_3 \\ 
+\end{pmatrix}
+\end{eqnarray}
  
+
 \subsection{Applying boundary condition to KE table and R}
 
 As discussed in the previous homeworks, for Dirichlet BC on u(0):
 \begin{align*}
-K(1,1)& =&1, K(1, 2) =0 \\
+K(1,1)& =& 1, K(1, 2) =0 \\
 R(1) &=& u(0)\\
-\Longleftrightarrow\\
-R(1)&=&u(0)\\
-R(2)&=&R(2)-KE_{table} (1,2) * u(0)\\
-KE_{table} (1, 1)& =&1, KE_{table} (1, 2) =0
+\mbox{in the form of KE table:} &&\\
+R(1) &=& u(0)\\
+R(2) &=& R(2)-KE_{table} (1,2) * u(0)\\
+KE_{table} (1, 1) & =& 1, KE_{table} (1, 2) =0
 \end{align*}
 
 For Dirichlet BC on u(L):
 \begin{align*}
 K(N,N) &=&1,K(N, 1:N-1) =0\\ 
 R(N) &=& u(L) \\
-\Longleftrightarrow\\
+\mbox{in the form of KE table:} &&\\
 R(N)&=&u(L)\\
 R(N-1)&=&R(N-1)-KE_{table} (N-1,2) * u(L)\\
 KE_{table} (N-1, 3)& =&1, KE_{table} (N-1, 2) =0
 \end{align*}
 
 
-
-After the modification, a = K/R results in for the line corresponds to Dirichlet boundary condition: 
-
-a(1) = R(1)/K[1,1] = R(1)
-
-or
- 
-a(N) = R(N)/K[N,N] = R(N) 
-
-\subsubsection{Neumann boundary condition}
-Neumann boundary condition gives the value of traction $A1(x)\frac{du}{dx}$ on an end point.
+Neumann boundary condition gives the value of traction $A1(x)\frac{du}{dx}$ on an end point. The implementation doesn't change if KE table is used.
 
 For Neumann BC on x=0:
 
@@ -285,9 +317,10 @@ For Neumann BC on x=L:
 %Section: preconditioned conjugate-gradiant solver
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Preconditioned conjugate-gradient solver}
-There are two approaches to solve the equation for [K]{a} = {R}, direct and iterative. The number of operation in direct solvers are  $O(N^3)$. They are employed when the number of unknowns are not very large, and there are multiple load vectors. Iterative solver are prefered when the systems are very large. Conjugate gradient type iterative techniques need $O(N^2)$ operations. 
 
-We define a potential(eq\ref{eq: Pi}) whose derivative is the residual of the equation to solve. So the minimizer of the potential $\Pi$ is the solution to the discrete system. 
+There are two approaches to solve the equation for [K]{a} = {R}, direct and iterative. The number of operations in direct solvers are  $O(N^3)$. They are employed when the number of unknowns are not very large, and there are multiple load vectors. Iterative solver are prefered when the systems are very large. Conjugate gradient type iterative techniques need only $O(N^2)$ operations. 
+
+We define a potential(eq\ref{eq: Pi}) whose derivative is the residual of the equation to solve. So the minimizer of the potential $\Pi$ is the solution to the equation. 
 \begin{eqnarray}
 \bigtriangledown \Pi = [K]\{a\} - \{R\}
 \end{eqnarray}
@@ -303,9 +336,7 @@ We define a potential(eq\ref{eq: Pi}) whose derivative is the residual of the eq
 \{a\}^{i+1} = \{a\}^i + \lambda^i \{r\}^i
 \end{eqnarray}
 
-The idea of steepest descent is to find this minimizer of potential by going to the direction of the gradiant of the potential, i.e. $\{a\} ^{i+1} = \{a\} ^i + \lambda ^i \{z\} ^i $, where $\{z\}^i = \{r\}^i + \theta ^i\{z\}^{i-1}$.
-
-The coefficient $\theta$ is chosen so that {z} is [K] conjugate to $\{z\}^{i-1}$, i.e.,
+The idea of steepest descent is to find this minimizer of potential by going to the direction of the gradiant of the potential, i.e. $\{a\} ^{i+1} = \{a\} ^i + \lambda ^i \{z\} ^i $, where $\{z\}^i = \{r\}^i + \theta ^i\{z\}^{i-1}$. The coefficient $\theta$ is chosen so that {z} is [K] conjugate to $\{z\}^{i-1}$, i.e.,
 
 \begin{eqnarray}
 \{z\}^{T, i} [K] \{z\} ^{i-1} =0 \nonumber\\
@@ -327,14 +358,18 @@ The rate of convergence of the CG method is related to the condition number
 
 To reduce the condition number, preconditioning of [K] is done by forming the transformation of variables:
 \begin{eqnarray}
-\{a\} = [T] \{ A\} \nonumber\\
-\bar{[K]} = [T] ^T [K] [T] 
+T^{T}KT  [T^{-1} A] = [T^T R] \nonumber\\
+\bar{[K]} = [T] ^T [K] [T] \nonumber\\
+\bar{R} = T^T R \nonumber\\
+\bar{[K]}a = \bar{R} \nonumber\\
+A = aT 
 \end{eqnarray} 
 
 Diagonal preconditioning is an inexpensive widely used, where [T] is defined from the diaganol of [K] as:
 \begin{eqnarray}
 T_{ij} = \frac{1} { \sqrt{ K_{ij} } }, i,j = 1, ... ndof 
 \end{eqnarray}
+Note that in order to use this preconditioner, the diagonal of K has to be positive, as in our case.
 
 \subsection{iteration}
 Starting from an initial guess for $\{a\}^0$, we can calculate the residual defined as in equation \ref{eq: residual}.
@@ -377,28 +412,38 @@ e^N = \frac{\| u -u^N \| _{A_1(\Omega)}} {\| u \| _{A_1 (\Omega)}} \nonumber\\
 To compute the error numerically, we calculate the two following quantities element by element, and then assemble them to obtain the overall error:
 
 \begin{eqnarray}
-\| u \| _{A_1 (\Omega)}^2 &=&\int_{\Omega} A_1(\frac{du}{dx})^2 dx\nonumber\\
-\| u -u^N \| _{A_1(\Omega)} ^2 &=& \int_{\Omega} A_1 (\frac{d(u-u^N)}{dx})^2 dx\nonumber\\
-&=& A_1 \int_{\Omega} (\frac{du}{dx} - \frac{du_N}{dx})^2 dx\nonumber\\
-&=& A_1 \sum_{e=1}^{N_e} \int_{x_e}^{x_{e+1}} (\frac{du}{dx} - \frac{du_N}{dx})^2 dx \nonumber\\
-&=& A_1 \sum_{e=1}^{N_e} \int_{-1}^{1} (\frac{du}{d\xi} - \frac{du_N}{d\xi})^2 J d\xi
+\| u \| _{A_1(x) (\Omega)}^2 &=&\int_{\Omega} A_1(x)(\frac{du}{dx})^2 dx\nonumber\\
+\| u -u^N \| _{A_1(x)(\Omega)} ^2 &=& \int_{\Omega} A_1(x) (\frac{d(u-u^N)}{dx})^2 dx\nonumber\\
+&=& A_1(x) \int_{\Omega} (\frac{du}{dx} - \frac{du_N}{dx})^2 dx\nonumber\\
+&=& A_1(x) \sum_{e=1}^{N_e} \int_{x_e}^{x_{e+1}} (\frac{du}{dx} - \frac{du_N}{dx})^2 dx \nonumber\\
+&=& A_1(x) \sum_{e=1}^{N_e} \int_{-1}^{1} (\frac{du}{d\xi} - \frac{du_N}{d\xi})^2 J d\xi
 \end{eqnarray}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %section postprocessing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Postprocessing}
-The postprocessing is more complicated for higher order element. In order to plot the result, we calculate the value of the numerical solution for 10 points in each elements. For any given $\xi$, the corresponding value for the solution is calculated, as well as the global coordinate x for the given $\xi$:
+% \section{Postprocessing}
+%  In order to plot the result, we calculate the value of the numerical solution for 10 points in each elements. For any given $\xi$, the corresponding value for the solution is calculated, as well as the global coordinate x for the given $\xi$:
+
+% \begin{eqnarray}
+%  u(x) &=& u(x(\xi))=\sum_{i=1}^{P+1} a_i^e \hat{\phi_i}\nonumber\\
+%  x(\xi) &=& \sum x^e \hat{\phi}(\xi)
+%  \end{eqnarray} 
+
+% For each element, we can also calculate the derivative of u(x):
+
+% \begin{eqnarray}
+% \frac{du}{dx} = \frac{d}{dx} \sum_{i=1}^{P+1} a_i \phi_i = (\frac{d}{d\xi}\sum_{i=1}^{P+1} a_i \hat{\phi_i})\frac{d\xi}{dx}
+% \end{eqnarray}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%section Potential energy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Potential energy}
+The potential energy is defined as:
 
 \begin{eqnarray}
- u(x) &=& u(x(\xi))=\sum_{i=1}^{P+1} a_i^e \hat{\phi_i}\nonumber\\
- x(\xi) &=& \sum x^e \hat{\phi}(\xi)
- \end{eqnarray} 
-
-For each element, we can also calculate the derivative of u(x):
-
-\begin{eqnarray}
-\frac{du}{dx} = \frac{d}{dx} \sum_{i=1}^{P+1} a_i \phi_i = (\frac{d}{d\xi}\sum_{i=1}^{P+1} a_i \hat{\phi_i})\frac{d\xi}{dx}
+J(u) = \frac{1}{2} B(u, u) - F(u) = \frac{1}{2} \int_{\Omega} \frac{du}{dx} E \frac{du}{dx} - \int_{\Omega} fu dx - tu |_{\Gamma t}
 \end{eqnarray}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -407,7 +452,10 @@ For each element, we can also calculate the derivative of u(x):
 
 \section{Results}
 
+The numerical solution for N = 100, 1000 and 10000 are plotted in figure
+
 Minimum number of elements and number of nodes to achieve to error criteria for different order of elements are tabulated bellow. $N_{Opt}$ drops dramatically with the order of the elements. 
+
 \begin{table}
 \begin{center}
   \begin{tabular}{ l | c | c}
@@ -459,15 +507,7 @@ e^N \leq Ch^{\gamma = min (r-1, P)}
 \end{eqnarray}
 r is smoothness, and P is the polynomial order.
 
-From the error plotting, we can observe the linear relation between $log(e^N)$ and $log(h)$, 
 
-\begin{eqnarray}
-\gamma = 0.98, P=1\nonumber\\
-\gamma = 1.98, P=2\nonumber\\
-\gamma = 2.93, P=3\nonumber\\
-\end{eqnarray}
-
-Overall, $\gamma$ is similar  to P. 
 
 % \begin{figure}
 %         \centering
