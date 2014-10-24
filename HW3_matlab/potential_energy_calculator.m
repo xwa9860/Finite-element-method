@@ -25,6 +25,6 @@ for e=1:Ne
     fu = fu + GQ_integration(P, Q, fu_func, coord_elem_ksi);
 end
 
-J = 1/2.0 * u_sqaure + fu + 1*getOutput(@ana_sol_calculator, 1, 1);
+J = 1/2.0 * u_square + fu + 1*getOutput(@ana_sol_calculator, 1, 1);
 
 end
