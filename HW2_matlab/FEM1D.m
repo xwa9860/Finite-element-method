@@ -89,6 +89,7 @@ while error > errorTol  && Ne<10000
     coord = linspace(xMin, xMax, N);
     matA = make_K_R(P, Ne, coord, A1Func, fFunc,type_bc_l, v0, type_bc_r, vl);
     error = calcError(P, Ne, A1Func, dux, matA,coord);
+    %display(error);
 end
 display(Ne);
 Ne_max = Ne;

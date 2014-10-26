@@ -1,9 +1,9 @@
-function error = calcError( P, Ne, A1Func, dux, AMat, coord)
+function error = calcError( P, Ne, AMat, coord)
 %calculate the error of approximation  
 numeritor=0;
 denominator=0;
 
-Q=9;
+Q=5;
 if P==1
     coord_elem_ksi = [-1.0, 1.0];
 elseif P==2
@@ -17,9 +17,15 @@ for e=1:Ne
     Nr= P*e+1;
     coord_elem= coord(Nl:Nr);
     AMat_elem = AMat(Nl:Nr);
-   
-    du_uN_square_func = @(ksi) A1Func(getOutput(@shapeFunc, 3, ksi, coord_elem, P))*(dux(getOutput(@shapeFunc, 3, ksi, coord_elem, P))-getOutput(@postprocessing, 1, ksi, AMat_elem, coord_elem, P))^2;
-    du_square_func = @(ksi) A1Func(getOutput(@shapeFunc, 3, ksi, coord_elem, P))*dux(getOutput(@shapeFunc, 3, ksi, coord_elem, P))^2;
+    J = (coord(Nr)-coord(Nl))/2;
+    
+    x = @(ksi) getOutput(@shapeFunc, 3, ksi, coord_elem, P);
+    A1= @(ksi)A1Func(x(ksi));
+    dux_true =@(ksi) getOutput(@ana_sol_calculator, 2, x(ksi));
+    dux_N = @(ksi) getOutput(@postprocessing, 1, ksi, AMat_elem, coord_elem, P);
+    
+    du_uN_square_func = @(ksi) A1(ksi)*(dux_true(ksi)-dux_N(ksi))^2*J;
+    du_square_func = @(ksi) A1(ksi)*(dux_true(ksi))^2*J;
     
     u_uN_square=GQ_integration(P, Q, du_uN_square_func, coord_elem_ksi);
     u_square = GQ_integration(P, Q, du_square_func, coord_elem_ksi);
@@ -28,8 +34,7 @@ for e=1:Ne
     denominator = denominator + u_square;
 
 end
-%display(numeritor);
-%display(denominator);
+
 error = sqrt(numeritor)/sqrt(denominator);
 
 end

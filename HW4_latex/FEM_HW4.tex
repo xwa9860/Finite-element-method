@@ -1,0 +1,203 @@
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[a4paper, 12pt]{article} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\raggedright \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\usepackage{parskip}
+\setlength{\parindent}{15pt}
+ \usepackage{graphicx}
+ \usepackage{epstopdf}
+\usepackage{caption}
+\usepackage{subcaption}
+%\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+%\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+%\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Nuclear Engineering, UC Berkeley} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge ME 280A Finite Element Analysis \\HOMEWORK 4: ERROR ESTIMATION and ADAPTIVE MESHING  \\  % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Xin Wang} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+The objective of this project is to solve two 1-D differential equation systems using linear elements.  
+
+
+\begin{eqnarray}
+\frac{d}{dx}(A_1(x) \frac{du}{dx}) &=& f(x)\nonumber\\
+f(x)&=& 90\pi^2 sin(3\pi x)sin(36\pi x^3) - (10sin(3\pi x) + 5)...\nonumber\\
+(216 \pi x cos(36 \pi x^3) &-& 11664 \pi^2 x^4 sin(36 \pi x^3)) - 6480 \pi^2x^2cos(3\pi x)cos(36 \pi x^3) \nonumber\\
+A_1(x) &=& 1.0\nonumber\\
+L &= &1 \nonumber\\
+u(0) &=& 0 \nonumber\\
+u(L) &=& 0 \nonumber\\
+u^{true} &=& (10 sin(3 \pi x) + 5) sin(36 \pi x^3) \nonumber\\
+du/dx^{true} &=& 6\pi (5 sin(36\pi x^3) cos(3\pi x) + 90x^2 (2 sin(3\pi x) +1 ) cos(36 \pi x^3) )\nonumber\\
+\end{eqnarray}
+
+and
+
+\begin{eqnarray}
+\frac{d}{dx}(A_1(x) \frac{du}{dx}) &=& f(x)\nonumber\\
+f(x)&=&256sin(\frac{3\pi x}{4})cos(16 \pi x) \nonumber\\
+A_1(x) & = &     
+\begin{cases}
+       0.2 & x < 1/3\\
+       2.0 & x \geq 1/3 
+\end{cases}\nonumber\\
+L &=& 1 \nonumber\\
+u(0) & =& 0 \nonumber\\
+A1(L)\frac{du}{dx}(L) &=& 1 \nonumber\\
+u^{true} &=& \frac{512}{4087 \pi A_1} (\frac{268 sin(\frac{61\pi x}{4})} {61\pi} - \frac{244 sin(\frac{67 \pi x}{4})}{67 \pi}) \nonumber\\
++
+   & & \begin{cases}
+        (5+\frac{7680 \sqrt{2}}{4087 \pi}) x,  x < 1/3\\
+       \frac{2304 \sqrt{2} (8210 - 768 \sqrt{3} + 4087 \pi)}{16703569 \pi ^2} + \frac{3}{2} + (\frac{1}{2} + \frac{768 \sqrt{2}} {4087 \pi}) x, x \geq 1/3 
+    \end{cases} \nonumber\\
+du/dx^{true} &=& \frac{512}{4087 \pi A_1} (67 cos(\frac{61\pi x}{4}) - 61cos(\frac{67 \pi x}{4}) )\nonumber\\
++  & & \begin{cases}
+        (5+\frac{7680 \sqrt{2}}{4087 \pi}),  x < 1/3\\
+        (\frac{1}{2} + \frac{768 \sqrt{2}} {4087 \pi}), x \geq 1/3 
+        \end{cases}
+\end{eqnarray}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%section Finite Element Method
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Finite Element Method}
+
+\subsection{Weak form}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Section: adaptive mesh
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adaptive meshing}
+
+\subsection{Data structure}
+The node coordinates are stored in a Nx1 table. And the connectivity talbe contains the node numbers for each element, i.e $ce = connectivity(e) = [ce(1), ce(2)]$ for linear element, where ce(1) and ce(2) are the number of the nodes at the element e.
+
+The stiffness matrix K is no more a band matrix, but instead filled as:
+\begin{align}
+K[ce(i), ce(j)] = Ke(i, j) \nonumber\\
+i = 1,2 ; j = 1, 2
+\end{align}
+
+The load matrix is not filled in order anymore but still a 1xN array:
+\begin{align}
+R(ce(i)) = Re(i)\nonumber\\
+i =1, 2
+\end{align}
+
+\subsection{Adaptive meshing process}
+The process to solve the problem using adaptive meshing is:
+\begin{itemize}
+\item solve with an initial mesh, Ne = 16
+\item loop through the mesh and calculate the element error
+    \begin{itemize}
+    \item fetch the node numbers in this element using connectivity table \\ ce= [2, 5]
+    \item fetch xe and ae with ce
+    \item compute $E_e$ with gaussian quadriture
+    \end{itemize}
+\item if the error is larger than the tolerance for an element, i.e. $E_e>tol_e$, then devide the element into 2
+    \begin{itemize}
+    \item add the new node nodex(end+1) = (xe(1)+xe(2))/2
+    \item connectivity(e) = [ce(1), len(nodex)]
+    \item add a new element: connectivity(end+1) = [len(nodex), ce(2)]
+    \item changed element = true
+    \end{itemize}
+\item check if any element was modified, if so, resolve with the new mesh, otherwise done.
+\end{itemize}
+
+The error is calculated on every mesh element as:
+
+\begin{align}
+E_I &= \frac{ \frac{1}{h_I} \| u-u^N \|^2_{A_1(\Omega_I)} }{ \frac{1}{L} \| u \|^2_{A_1(\Omega)} } \nonumber\\
+    &= \frac{ \frac{1}{h_I} \int_{\Omega_I} A_1(x) (\frac{du ^{True}}{dx} - \frac{du}{dx}) ^2 dx}{ \frac{1}{L} \int_{\Omega}  A_1(x) (\frac{du^{True}}{dx} )^2 dx} \nonumber\\
+\end{align}
+
+The element error is normalized by the length of the element, so if all the EI is less than the overall Tol, the overall error will satisfy the error tolerance. Note that EI < Tol is more strict than error < Tol.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Error Calculations}
+The overall error is defined as 
+
+\begin{eqnarray}
+e^N = \frac{\| u -u^N \| _{A_1(\Omega)}} {\| u \| _{A_1 (\Omega)}} \nonumber\\
+\| u \| _{A_1 (\Omega)} = \sqrt{\int_{\Omega} \frac{du}{dx} A_1 \frac{du}{dx} dx} = \sqrt{\int_{\Omega} A_1(\frac{du}{dx})^2 dx}\nonumber\\
+\| u -u^N \| _{A_1(\Omega)} = \sqrt{\int_{\Omega} A_1 (\frac{d(u-u^N)}{dx})^2 dx}
+\end{eqnarray}
+
+To compute the error numerically, we calculate the two following quantities element by element, and then assemble them to obtain the overall error:
+
+\begin{eqnarray}
+\| u \| _{A_1(x) (\Omega)}^2 &=&\int_{\Omega} A_1(x)(\frac{du}{dx})^2 dx\nonumber\\
+\| u -u^N \| _{A_1(x)(\Omega)} ^2 &=& \int_{\Omega} A_1(x) (\frac{d(u-u^N)}{dx})^2 dx\nonumber\\
+&=&  \int_{\Omega} A_1(x)(\frac{du}{dx} - \frac{du_N}{dx})^2 dx\nonumber\\
+&=&  \sum_{e=1}^{N_e} \int_{x_e}^{x_{e+1}} A_1(x)(\frac{du}{dx} - \frac{du_N}{dx})^2 dx \nonumber\\
+&=&  \sum_{e=1}^{N_e} \int_{-1}^{1} A_1(x(\xi)) (\frac{du}{d\xi} - \frac{du_N}{d\xi})^2 J d\xi
+\end{eqnarray}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%section results
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\subsection{Non-adaptive meshing}
+For each problem, the minimum number of equally spaced linear elements needed in order to achieve $e^N \leq 0.05$ are 1466 and 382. For the second problem, another meshing method was tested: defining a mesh point right at the discontinuty, then divide the left and right side to similar size meshes. The left side of the domains was divided into 85 elements and the right side into 171 elements, i.e 255 elements in total. Through these two methods, we can conclude that catching the discontinuity is important in reducing the mesh number. 
+
+\subsection{Adaptive meshing}
+Solving both 
+adaptive meshing was also used to solve the equation. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%section conclusion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+
+
+\end{document}

@@ -27,36 +27,35 @@ vl     = 1;    % bourdary value at xMax
 it_arr = zeros(3, 1); % record PCG_solver iteration number
 error_arry = zeros(3,1); % record the numerical error
 J_arr =zeros(3,1);
-Ne_array= [100, 1000, 10000];
-for k = 1:3
-    Ne = Ne_array(k);  
+
+    Ne = 10000;  
     P =1;
     N = P*Ne +1;
     coord = linspace(xMin, xMax, N);
-    [KE_table, R]= make_KE_table_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
+    [K, R]= make_K_R(P, Ne, coord, fFunc, type_bc_l, v0, type_bc_r, vl);
 
-    [matA1, error, it] = CG_solver_KE_table(KE_table, R, 1e-3);
+    [matA1, error, it] = CG_solver(K, R, 1e-3);
    
-    numerical_error = calcError(1, Ne, matA1,coord);
-    it_arr(k) =it
-    error_arry(k) = numerical_error;
-    optimized_plot(coord, matA1);
-    J_arr(k) = potential_energy_calculator (P, fFunc, Ne, matA1, coord)
-    hold all on;
+    numerical_error = calcError(1, Ne, matA1,coord)
+    it_arr(1) =it
+    error_arry(1) = numerical_error
+    %optimized_plot(coord, matA1);
+    J_arr(1) = potential_energy_calculator (P, fFunc, Ne, matA1, coord);
     
-end
 
+    
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %plot analytical solution
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-ux_arr =zeros(N, 1);
-    for i=1:N
-        ux_arr(i) = ana_sol_calculator(coord(i));
-    end
-    
-optimized_plot(coord, ux_arr);
-legend('Ne=100', 'Ne=1000', 'Ne=10000', 'analytical solution');
+% ux_arr =zeros(N, 1);
+%     for i=1:N
+%         ux_arr(i) = ana_sol_calculator(coord(i));
+%     end
+%     
+% optimized_plot(coord, ux_arr);
+% legend('Ne=100', 'Ne=1000', 'Ne=10000', 'analytical solution');
 
 % % %find the optimal number of element to achieve the error criteria
 % errorTol = 0.010;

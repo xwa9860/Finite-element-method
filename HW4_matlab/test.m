@@ -1,12 +1,11 @@
-function [ux, dux] = ana_sol(x)
-%{
-define the analytical solution
-%}
-
-if x<0 || x>1
-    error('ux and dux is not defined for the given x value. only defined on x=[0,1]');
-end
-
+%analytical solution for the problem
+% x=1;
+% % C1_array = [2.0, 2.5, 1.25, 0.25, 4.0, 1.75, 0.5, 0.75, 3.25, 1.0];
+% % C1= C1_array(max(ceil(x/0.1), 1));
+% % 
+% % C2_array = [];
+% % C2= C2_array(max(ceil(x/0.1), 1));
+% 
 x_array= linspace(0,1,11);
 
 dux_func =@(x, C1) 1/A1Func(x)*(512*(67*cos(61*pi*x/4) -61*cos(67*pi*x/4))/4087/pi)+C1/A1Func(x);
@@ -45,9 +44,19 @@ for n =1:1:10
 end
 display(C2_array);
 
-ux = -1/A1Func(x)*(137216*sin(61*pi*x/4)/61/pi -124928*sin(67*pi*x/4)/67/pi)/4087/pi+...
-    C1_array(max(ceil(x/0.1), 1))*x/A1Func(x) + C2_array(max(ceil(x/0.1), 1));
 
-dux = -1/A1Func(x)*(512*(67*cos(61*pi*x/4) -61*cos(67*pi*x/4))/4087/pi)+C1_array(max(ceil(x/0.1), 1))/A1Func(x);
+% x = linspace(0, 1, 100);
+% plot(x, u1(x));
+
+% hold on;
+% ux =@(x) 5*((4087 * pi *x + 1536*sqrt(2) *x + ...
+%     137216*sin(61*pi*x/4)/61/pi -124928*sin(67*pi*x/4)/67/pi)...
+%     /4087/pi);
+
+
+plot(x_arr, ux(x));
+% syms u(t)
+% Du(t) = diff(u);
+% u1(t) = dsolve(diff(u,t,t) == 256*sin(3/4*pi*t)*cos(16*pi*t), u(0) == 0, Du(0) == 0, t)
 
 
